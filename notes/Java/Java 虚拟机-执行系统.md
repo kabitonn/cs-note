@@ -82,7 +82,7 @@ Clojure(Lisp 语言的一种方言)、Groovy、Scala 等语言都是运行在 Ja
 
 <div align="center"> 
 
-![](../../pictures/jvm/编译字节码.png ':size=600')
+![](../../assets/cs-note/jvm/编译字节码.png ':size=600')
 </div>
 
 
@@ -130,7 +130,7 @@ ClassFile {
 
 <div align="center"> 
 
-![](../../pictures/jvm/类文件字节码结构组织示意图.png ':size=600')
+![](../../assets/cs-note/jvm/类文件字节码结构组织示意图.png ':size=600')
 </div>
 
 ### 1. 魔数
@@ -555,7 +555,7 @@ java虚拟机规范描述了java虚拟机应有的共同程序存储格式：cla
 
 <div align="center"> 
 
-![](../../pictures/jvm/类加载过程.png ':size=600')
+![](../../assets/cs-note/jvm/类加载过程.png ':size=600')
 </div>
 
 包含了加载、验证、准备、解析和初始化这 5 个阶段。
@@ -649,7 +649,7 @@ public static final int value = 123;
 
 <div align="center"> 
 
-![](../../pictures/jvm/基本数据类型的零值.png ':size=600')
+![](../../assets/cs-note/jvm/基本数据类型的零值.png ':size=600')
 </div>
 
 ### 4. 解析
@@ -785,7 +785,7 @@ System.out.println(ConstClass.HELLOWORLD);
 
 <div align="center"> 
 
-![](../../pictures/jvm/classloader.png ':size=600')
+![](../../assets/cs-note/jvm/classloader.png ':size=600')
 </div>
 
 ### 2. 好处
@@ -1197,7 +1197,7 @@ Java 程序最初是通过解释器解释执行的，当虚拟机发现有个方
 
 <div align="center"> 
 
-![](../../pictures/jvm/解释器与编译器交互.png ':size=550')
+![](../../assets/cs-note/jvm/解释器与编译器交互.png ':size=550')
 </div>
 
 HotSpot 虚拟机内置了两个即时编译器：Client Compiler 和 Server Compiler，简称 C1 编译器和 C2 编译器。默认采用解释器和其中一个编译器直接配合的方式工作
@@ -1228,7 +1228,7 @@ HotSpot 虚拟机内置了两个即时编译器：Client Compiler 和 Server Com
 
 <div align="center"> 
 
-![](../../pictures/jvm/方法调用计数器.png ':size=550')
+![](../../assets/cs-note/jvm/方法调用计数器.png ':size=550')
 </div>
 
 方法调用计数器统计的不是方法被调用的绝对次数，而是一段时间内的方法被调用的次数。当超过一段的时间限度，如果方法的调用次数仍然不足以让它提交给即时编译器编译，那这个方法的调用计数器就会被减少一半。这个过程称为热度衰减(Counter Decay)，这段时间称为方法统计的半衰周期(Counter Half Life Time)。进行热度衰减的动作是虚拟机在垃圾收集时顺便进行的
@@ -1238,7 +1238,7 @@ HotSpot 虚拟机内置了两个即时编译器：Client Compiler 和 Server Com
 回边计数器的作用是统计方法体中循环体代码执行次数，在字节码中遇到遇到控制流向后调整的指令称为回边。显然，建立回边计数器统计的目的就是为了触发 OSR 编译。
 <div align="center"> 
 
-![](../../pictures/jvm/回边计数器.png ':size=550')
+![](../../assets/cs-note/jvm/回边计数器.png ':size=550')
 </div>
 
 回边计数器没有计数热度衰减的过程，因此这个计数器统计的就是该方法循环执行的绝对次数。当计数器溢出的时候，它还会把方法计数器的值也调整到溢出状态，这样下次再进入该方法的时候就会执行标准编译过程。
@@ -1256,7 +1256,7 @@ Client Compiler 和 Server Compiler 两个编译器的编译过程是不一样�
 
 <div align="center"> 
 
-![](../../pictures/jvm/Client Compiler过程.png.png ':size=550')
+![](../../assets/cs-note/jvm/Client Compiler过程.png.png ':size=550')
 </div>
 
 **Server Compiler** 是面向服务端的，并且为服务端性能配置进行了特别调整，是一个充分优化过的高级编译器，几乎能达到 GNU 编译器使用 -O2 参数时的优化强度。它会执行所有经典的优化动作，比如无用代码消除、循环展开、循环表达式外提、消除公共子表达式、常量传播、基本块重排序等，还会实施一些与 Java 语言特征密切相关的技术，比如范围检查消除、空值检查消除。另外，还可能根据解释器或 Client Compiler 提供的性能监控信息，进行一些不稳定的激进优化，如守护内联、分支频率预测等。

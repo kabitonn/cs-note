@@ -555,7 +555,7 @@ JDK1.8 之前 HashMap 底层是 数组和链表 结合在一起使用也就是 �
 
 <div align="center"> 
 
-![](../../pictures/java-collection/jdk7的HashMap结构.png)
+![](../../assets/cs-note/java-collection/jdk7的HashMap结构.png)
 </div>
 
 #### JDK1.8之后
@@ -564,7 +564,7 @@ jdk1.8在解决哈希冲突时有了较大的变化，当链表长度大于阈�
 
 <div align="center"> 
 
-![](../../pictures/java-collection/jdk8的HashMap结构.png ':size=500')
+![](../../assets/cs-note/java-collection/jdk8的HashMap结构.png ':size=500')
 </div>
 
 
@@ -682,7 +682,7 @@ HashMap只提供了put用于添加元素，putVal方法只是给put方法调用�
 
 <div align="center"> 
 
-![](../../pictures/java-collection/HashMap的put方法.png ':size=800')
+![](../../assets/cs-note/java-collection/HashMap的put方法.png ':size=800')
 </div>
 
 
@@ -1012,7 +1012,7 @@ Segment 继承自 ReentrantLock。所以 Segment 是一种可重入锁，扮演�
 
 <div align="center"> 
 
-![](../../pictures/java-collection/jdk7的ConcurrentHashMap结构.png)
+![](../../assets/cs-note/java-collection/jdk7的ConcurrentHashMap结构.png)
 </div>
 
 ```java
@@ -1057,7 +1057,7 @@ synchronized只锁定当前链表或红黑二叉树的首节点，这样只要ha
 
 <div align="center"> 
 
-![](../../pictures/java-collection/jdk8的ConcurrentHashMap结构.png)
+![](../../assets/cs-note/java-collection/jdk8的ConcurrentHashMap结构.png)
 </div>
 
 ### 2. size 操作

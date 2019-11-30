@@ -67,7 +67,7 @@
 
 <div align="center"> 
 
-![](../../pictures/jvm/2019-3Java运行时数据区域JDK1.8.png ':size=550')
+![](../../assets/cs-note/jvm/2019-3Java运行时数据区域JDK1.8.png ':size=550')
 </div>
 
 **线程私有的：**
@@ -208,7 +208,7 @@ Class 文件中的常量池(编译器生成的字面量和符号引用)会在类
 
 <div align="center"> 
 
-![](../../pictures/jvm/26038433.jpg ':size=600')
+![](../../assets/cs-note/jvm/26038433.jpg ':size=600')
 </div>
 
 除了在编译期生成的常量，还允许动态生成，例如 String 类的 intern()。
@@ -262,7 +262,7 @@ System.out.println(str2==str3);//false
 
 <div align="center"> 
 
-![](../../pictures/jvm/2019-3String-Pool-Java1-450x249.png ':size=500')
+![](../../assets/cs-note/jvm/2019-3String-Pool-Java1-450x249.png ':size=500')
 </div>
 
 **String s1 = new String("abc");这句话创建了几个字符串对象？**
@@ -323,7 +323,7 @@ System.out.println(str2==str3);//false
 ```
 <div align="center"> 
 
-![](../../pictures/jvm/字符串拼接.png ':size=400')
+![](../../assets/cs-note/jvm/字符串拼接.png ':size=400')
 </div>
 
 尽量避免多个字符串拼接，因为这样会重新创建对象。如果需要改变字符串的话，可以使用 StringBuilder 或者 StringBuffer。
@@ -423,7 +423,7 @@ JDK1.4 中新加入的 **NIO(New Input/Output) 类**，引入了一种基于**�
 下图便是 Java 对象的创建过程，我建议最好是能默写出来，并且要掌握每一步在做什么。
 <div align="center"> 
 
-![](../../pictures/jvm/Java创建对象的过程.png ':size=450')
+![](../../assets/cs-note/jvm/Java创建对象的过程.png ':size=450')
 </div>
 
 #### Step1:类加载检查
@@ -441,7 +441,7 @@ JDK1.4 中新加入的 **NIO(New Input/Output) 类**，引入了一种基于**�
 
 <div align="center"> 
 
-![](../../pictures/jvm/内存分配的两种方式.png ':size=800')
+![](../../assets/cs-note/jvm/内存分配的两种方式.png ':size=800')
 </div>
 
 
@@ -481,14 +481,14 @@ JDK1.4 中新加入的 **NIO(New Input/Output) 类**，引入了一种基于**�
 2. 
 <div align="center"> 
 
-![](../../pictures/jvm/对象的访问定位-使用句柄.png ':size=600')
+![](../../assets/cs-note/jvm/对象的访问定位-使用句柄.png ':size=600')
 </div>
 
 1. **直接指针：**  如果使用直接指针访问，那么 Java 堆对象的布局中就必须考虑如何放置访问类型数据的相关信息，而 reference 中存储的直接就是对象的地址。
 2. 
 <div align="center"> 
 
-![](../../pictures/jvm/对象的访问定位-直接指针.png ':size=600')
+![](../../assets/cs-note/jvm/对象的访问定位-直接指针.png ':size=600')
 </div>
 
 **这两种对象访问方式各有优势。使用句柄来访问的最大好处是 reference 中存储的是稳定的句柄地址，在对象被移动时只会改变句柄中的实例数据指针，而 reference 本身不需要修改。使用直接指针访问方式最大的好处就是速度快，它节省了一次指针定位的时间开销。**

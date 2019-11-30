@@ -36,7 +36,7 @@
 - [Java 基础](notes/Java/Java%20基础.md) </br>
 - [Java 容器](notes/Java/Java%20容器.md) </br>
 - [Java 并发基础](notes/Java/Java%20并发基础.md) </br>
-- [Java 并发进阶](notes/Java/Java%2并发进阶.md) </br>
+- [Java 并发进阶](notes/Java/Java%20并发进阶.md) </br>
 - [Java 虚拟机-内存管理](notes/Java/Java%20虚拟机-内存管理.md) </br>
 - [Java 虚拟机-执行系统](notes/Java/Java%20虚拟机-执行系统.md) </br>
 - [Java I/O](notes/Java/Java%20IO.md)

@@ -58,7 +58,7 @@ Spring 官网列出的 Spring 的 6 个特征:
 
 下图对应的是 Spring4.x 版本。目前最新的5.x版本中 Web 模块的 Portlet 组件已经被废弃掉，同时增加了用于异步响应式处理的 WebFlux 组件。
 
-![Spring主要模块](../../pictures/framework/spring/Spring主要模块.png)
+![Spring主要模块](../../assets/cs-note/framework/spring/Spring主要模块.png)
 
 - **Spring Core：** 基础,可以说 Spring 其他所有的功能都需要依赖于该类库。主要提供 IoC 依赖注入功能。
 - **Spring  Aspects** ： 该模块为与AspectJ的集成提供支持。
@@ -87,7 +87,7 @@ Spring 时代我们一般通过 XML 文件来配置 Bean，后来开发人员觉
 
 **Spring IoC的初始化过程：** 读取XML资源，并解析，最终注册到Bean Factory中
 
-![Spring IoC的初始化过程](../../pictures/framework/spring/SpringIOC初始化过程.png)
+![Spring IoC的初始化过程](../../assets/cs-note/framework/spring/SpringIOC初始化过程.png)
 
 1. 准备：在调用ClassPathXmlApplicationContext后，先会将配置位置信息保存到configLocations，供后面解析使用，之后，会调用AbstractApplicationContext的refresh方法进行刷新
 2. 读取：创建处理每一个resource，处理XML每个元素，解析和注册bean。通过parseBeanDefinitionElement将XML的元素解析为BeanDefinition，然后存在BeanDefinitionHolder中，然后再利用BeanDefinitionHolder将BeanDefinition注册，实质就是把BeanDefinition的实例put进BeanFactory中
@@ -96,7 +96,7 @@ Spring 时代我们一般通过 XML 文件来配置 Bean，后来开发人员觉
 
 当完成初始化IOC容器后，如果bean没有设置lazy-init(延迟加载)属性，那么bean的实例就会在初始化IOC完成之后，及时地进行初始化。初始化时会先建立实例，然后根据配置利用反射对实例进行进一步操作，具体流程如下所示
 
-![Spring DI过程](../../pictures/framework/spring/Spring-DI过程.png)
+![Spring DI过程](../../assets/cs-note/framework/spring/Spring-DI过程.png)
 
 1. 创建bean的实例
 2. 注入bean的属性
@@ -192,7 +192,7 @@ global session 作用域类似于标准的 HTTP session 作用域，不过仅仅
 
 与之比较类似的中文版本:
 
-![Spring Bean 生命周期](../../pictures/framework/spring/Spring-bean生命周期.png)
+![Spring Bean 生命周期](../../assets/cs-note/framework/spring/Spring-bean生命周期.png)
 
 **Spring管理的单例/非单例对象**
 
@@ -217,7 +217,7 @@ AOP思想的实现一般都是基于 **代理模式** ，在JAVA中一般采用J
 - 如果目标对象的实现类实现了接口，Spring AOP 将会采用 JDK 动态代理来生成 AOP 代理类；
 - 如果目标对象的实现类没有实现接口，Spring AOP 将会采用 CGLIB 来生成 AOP 代理类;不过这个选择过程对开发者完全透明、开发者也无需关心。
 
-![SpringAOPProcess](../../pictures/framework/spring/SpringAOP-Process.png)
+![SpringAOPProcess](../../assets/cs-note/framework/spring/SpringAOP-Process.png)
 
 当然你也可以使用 AspectJ ,Spring AOP 已经集成了AspectJ ，AspectJ 应该算的上是 Java 生态系统中最完整的 AOP 框架了。
 
@@ -323,7 +323,7 @@ Spring 管理事务的方式
 
 ## 事务属性
 
-![Spring事务属性](../../pictures/framework/spring/Spring事务属性.png)
+![Spring事务属性](../../assets/cs-note/framework/spring/Spring事务属性.png)
 
 ### 事务隔离级别
 
@@ -436,7 +436,7 @@ Spring 中默认存在以下事件，他们都是对 `ApplicationContextEvent` �
 - `ContextRefreshedEvent`：`ApplicationContext` 初始化或刷新完成后触发的事件;
 - `ContextClosedEvent`：`ApplicationContext` 关闭后触发的事件。
 
-![ApplicationEvent-Subclass](../../pictures/framework/spring/ApplicationEvent-Subclass.png)
+![ApplicationEvent-Subclass](../../assets/cs-note/framework/spring/ApplicationEvent-Subclass.png)
 
 #### 事件监听者角色
 
@@ -535,7 +535,7 @@ public class DemoPublisher {
 
 装饰者模式可以动态地给对象添加一些额外的属性或行为。相比于使用继承，装饰者模式更加灵活。简单点儿说就是当我们需要修改原有的功能，但我们又不愿直接去修改原有的代码时，设计一个Decorator套在原有代码外面。其实在 JDK 中就有很多地方用到了装饰者模式，比如 `InputStream`家族，`InputStream` 类下有 `FileInputStream` (读取文件)、`BufferedInputStream` (增加缓存,使读取文件速度大大提升)等子类都在不修改`InputStream` 代码的情况下扩展了它的功能。
 
-![装饰者模式示意图](../../pictures/framework/spring/Decorator.png)
+![装饰者模式示意图](../../assets/cs-note/framework/spring/Decorator.png)
 
 Spring 中配置 DataSource 的时候，DataSource 可能是不同的数据库和数据源。我们能否根据客户的需求在少修改原有类的代码下动态切换不同的数据源？这个时候就要用到装饰者模式(这一点我自己还没太理解具体原理)。Spring 中用到的包装器模式在类名上含有 `Wrapper`或者 `Decorator`。这些类基本上都是动态地给一个对象添加一些额外的职责
 

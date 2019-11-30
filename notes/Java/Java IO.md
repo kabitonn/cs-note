@@ -85,7 +85,7 @@ IO流的分类：
 
 <div align="center"> 
 
-![](../../pictures/java-io/IO-操作方式分类.png ':size=800')
+![](../../assets/cs-note/java-io/IO-操作方式分类.png ':size=800')
 </div>
 
 **输入字节流InputStream**：
@@ -118,7 +118,7 @@ IO流的分类：
 
 <div align="center"> 
 
-![](../../pictures/java-io/IO-操作对象分类.png ':size=800')
+![](../../assets/cs-note/java-io/IO-操作对象分类.png ':size=800')
 </div>
 
 对**文件**进行操作(节点流）：
@@ -506,7 +506,7 @@ Java NIO Buffers用于和NIO Channel交互。发送给一个通道的所有数�
 
 <div align="center"> 
 
-![](../../pictures/java-io/channels-buffers.png ':size=300')
+![](../../assets/cs-note/java-io/channels-buffers.png ':size=300')
 </div>
 
 
@@ -807,14 +807,14 @@ Scatter/Gather功能是通道(Channel)提供的 并不是Buffer。
 
 <div align="center"> 
 
-![](../../pictures/java-io/scatter.png ':size=300')
+![](../../assets/cs-note/java-io/scatter.png ':size=300')
 </div>
 
 "**scattering read**"是把数据从单个Channel写入到多个buffer：read()方法内部会负责把数据按顺序写进传入的buffer数组内。一个buffer写满后，接着写到下一个buffer中
 
 <div align="center"> 
 
-![](../../pictures/java-io/gather.png ':size=300')
+![](../../assets/cs-note/java-io/gather.png ':size=300')
 </div>
 
 "**gathering write**"把多个buffer的数据写入到同一个channel中：write()方法内部会负责把数据按顺序写入到channel中
@@ -876,7 +876,7 @@ BIO通信(一请求一应答）模型图如下
 
 <div align="center"> 
 
-![](../../pictures/java-io/BIO通信模型.png)
+![](../../assets/cs-note/java-io/BIO通信模型.png)
 </div>
 
 采用 BIO 通信模型 的服务端，通常由一个独立的 Acceptor 线程负责监听客户端的连接。我们一般通过在while(true) 循环中服务端会调用 accept() 方法等待接收客户端的连接的方式监听请求，请求一旦接收到一个连接请求，就可以建立通信套接字在这个通信套接字上进行读写操作，此时不能再接收其他客户端连接请求，只能等待同当前连接的客户端的操作执行完成， 不过可以通过多线程来支持多个客户端的连接，如上图所示。
@@ -891,7 +891,7 @@ BIO通信(一请求一应答）模型图如下
 
 <div align="center"> 
 
-![](../../pictures/java-io/伪异步IO模型.png)
+![](../../assets/cs-note/java-io/伪异步IO模型.png)
 </div>
 
 采用线程池和任务队列可以实现一种叫做伪异步的 I/O 通信框架，它的模型图如上图所示。当有新的客户端接入时，将客户端的 Socket 封装成一个Task(该任务实现java.lang.Runnable接口）投递到后端的线程池中进行处理，JDK 的线程池维护一个消息队列和 N 个活跃线程，对消息队列中的任务进行处理。由于线程池可以设置消息队列的大小和最大线程数，因此，它的资源占用是可控的，无论多少个客户端并发访问，都不会导致资源的耗尽和宕机。

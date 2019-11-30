@@ -191,7 +191,7 @@ Java 线程在运行的生命周期中的指定时刻只可能处于下面 6 种
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/Java-线程状态变迁.png ':size=500')
+![](../../assets/cs-note/java-concurrent/Java-线程状态变迁.png ':size=500')
 </div>
 
 
@@ -199,7 +199,7 @@ Java 线程在运行的生命周期中的指定时刻只可能处于下面 6 种
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/RUNNABLE-VS-RUNNING.png ':size=500')
+![](../../assets/cs-note/java-concurrent/RUNNABLE-VS-RUNNING.png ':size=500')
 </div>
 
 由上图可以看出：线程创建之后它将处于 **NEW(新建)** 状态，调用 `start()` 方法后开始运行，线程这时候处于 **READY(可运行)** 状态。可运行状态的线程获得了 CPU 时间片(timeslice)后就处于 **RUNNING(运行)** 状态。
@@ -303,7 +303,7 @@ public static void main(String[] args) {
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/对象、监视器、同步队列和执行线程之间的关系.png ':size=500')
+![](../../assets/cs-note/java-concurrent/对象、监视器、同步队列和执行线程之间的关系.png ':size=500')
 </div>
 
 从图中可以看到，任意线程对Object(Object由synchronized保护)的访问，首先要获得Object的监视器。如果获取失败，线程进入同步队列，线程状态变为BLOCKED。当访问Object的前驱(获得了锁的线程)释放了锁，则该释放操作唤醒阻塞在同步队列中的线程，使其重新尝试对监视器的获取。
@@ -332,7 +332,7 @@ public static void main(String[] args) {
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/等待通知运行过程.png ':size=500')
+![](../../assets/cs-note/java-concurrent/等待通知运行过程.png ':size=500')
 </div>
 
 WaitThread首先获取了对象的锁，然后调用对象的wait()方法，从而放弃了锁并进入了对象的等待队列WaitQueue中，进入等待状态。由于WaitThread释放了对象的锁，NotifyThread随后获取了对象的锁，并调用对象的notify()方法，将WaitThread从WaitQueue移到SynchronizedQueue中，此时WaitThread的状态变为阻塞状态。NotifyThread释放了锁之后，WaitThread再次获取到锁并从wait()方法返回继续执行
@@ -390,7 +390,7 @@ ThreadLocalMap是ThreadLocal的静态内部类。
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/ThreadLocal内部类.png ':size=500')
+![](../../assets/cs-note/java-concurrent/ThreadLocal内部类.png ':size=500')
 </div>
 
 **ThreadLocal 内存泄露问题**
@@ -517,7 +517,7 @@ Java SE 1.6为了减少获得锁和释放锁带来的性能消耗，引入了“
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/偏向锁初始化的流程.png ':size=500')
+![](../../assets/cs-note/java-concurrent/偏向锁初始化的流程.png ':size=500')
 </div>
 
 #### 偏向锁的关闭
@@ -540,7 +540,7 @@ Java SE 1.6为了减少获得锁和释放锁带来的性能消耗，引入了“
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/争夺锁导致的锁膨胀流程图.png ':size=500')
+![](../../assets/cs-note/java-concurrent/争夺锁导致的锁膨胀流程图.png ':size=500')
 </div>
 
 因为自旋会消耗CPU，为了避免无用的自旋(比如获得锁的线程被阻塞住了)，一旦锁升级 成重量级锁，就不会再恢复到轻量级锁状态。当锁处于这个状态下，其他线程试图获取锁时， 都会被阻塞住，当持有锁的线程释放锁之后会唤醒这些线程，被唤醒的线程就会进行新一轮 的夺锁之争
@@ -1107,7 +1107,7 @@ Thread 对象的结束先行发生于 join() 方法返回。
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/从源码到最终执行的指令序列的示意图.png ':size=500')
+![](../../assets/cs-note/java-concurrent/从源码到最终执行的指令序列的示意图.png ':size=500')
 </div>
 
 上述的1属于编译器重排序，2和3属于处理器重排序。这些重排序可能会导致多线程程序出现内存可见性问题。对于编译器，JMM的编译器重排序规则会禁止特定类型的编译器重排序(不是所有的编译器重排序都要禁止)。对于处理器重排序，JMM的处理器重排序规则会要求Java编译器在生成指令序列时，插入特定类型的内存屏障(Memory Barriers，Intel称之为Memory Fence)指令，通过内存屏障指令来禁止特定类型的处理器重排序。
@@ -1237,7 +1237,7 @@ AQS，非阻塞数据结构和原子变量类(java.util.concurrent.atomic包中�
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/concurrent包的实现示意图.png ':size=500')
+![](../../assets/cs-note/java-concurrent/concurrent包的实现示意图.png ':size=500')
 </div>
 
 ### final内存语义

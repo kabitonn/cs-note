@@ -156,7 +156,7 @@ ConcurrentHashMap是由Segment数组结构和HashEntry数组结构组成。Segme
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/ConcurrentHashMap的结构图.png ':size=500')
+![](../../assets/cs-note/java-concurrent/ConcurrentHashMap的结构图.png ':size=500')
 </div>
 
 ## CopyOnWriteArrayList
@@ -277,7 +277,7 @@ ConcurrentLinkedQueue 适合在对性能要求相对较高，同时对队列的�
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/跳表结构.png ':size=500')
+![](../../assets/cs-note/java-concurrent/跳表结构.png ':size=500')
 </div>
 
 最低层的链表维护了跳表内所有的元素，每上面一层链表都是下面一层的子集。
@@ -286,7 +286,7 @@ ConcurrentLinkedQueue 适合在对性能要求相对较高，同时对队列的�
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/跳表查找.png ':size=500')
+![](../../assets/cs-note/java-concurrent/跳表查找.png ':size=500')
 </div>
 
 查找18 的时候原来需要遍历 18 次，现在只需要 7 次即可。针对链表长度比较大的时候，构建索引查找效率的提升就会非常明显。
@@ -319,7 +319,7 @@ Java中的线程池是运用场景最多的并发框架，几乎所有需要异�
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/线程池的主要处理流程.png ':size=500')
+![](../../assets/cs-note/java-concurrent/线程池的主要处理流程.png ':size=500')
 </div>
 
 ThreadPoolExecutor执行execute方法分下面4种情况：
@@ -395,7 +395,7 @@ Java的线程既是工作单元，也是执行机制。从JDK5开始，把工作
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/任务的两级调度模型.png ':size=500')
+![](../../assets/cs-note/java-concurrent/任务的两级调度模型.png ':size=500')
 </div>
 
 ### 框架结构
@@ -409,7 +409,7 @@ Executor框架主要由3大部分组成如下
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/任务的执行相关接口.png ':size=500')
+![](../../assets/cs-note/java-concurrent/任务的执行相关接口.png ':size=500')
 </div> 
 
 - 异步计算的结果(Future)  
@@ -420,7 +420,7 @@ Executor框架主要由3大部分组成如下
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/框架使用示意图.png ':size=500')
+![](../../assets/cs-note/java-concurrent/框架使用示意图.png ':size=500')
 </div>
 
 1. 主线程首先要创建实现 Runnable 或者 Callable 接口的任务对象。
@@ -498,7 +498,7 @@ ThreadPoolExecutor其他常见参数:
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/线程池各个参数的关系.png ':size=500')
+![](../../assets/cs-note/java-concurrent/线程池各个参数的关系.png ':size=500')
 </div>
 
 ThreadPoolExecutor 饱和策略定义:
@@ -541,7 +541,7 @@ FixedThreadPool 的 execute() 方法运行示意图
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/FixedThreadPool运行示意.png ':size=500')
+![](../../assets/cs-note/java-concurrent/FixedThreadPool运行示意.png ':size=500')
 </div>
 
 1. 如果当前运行的线程数小于 corePoolSize， 如果再来新任务的话，就创建新的线程来执行任务；
@@ -581,7 +581,7 @@ FixedThreadPool 使用无界队列 LinkedBlockingQueue(队列的容量为 Intger
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/SingleThreadExecutor运行示意.png ':size=500')
+![](../../assets/cs-note/java-concurrent/SingleThreadExecutor运行示意.png ':size=500')
 </div>
 
 1. 如果当前运行的线程数少于 corePoolSize，则创建一个新的线程执行任务；
@@ -614,7 +614,7 @@ CachedThreadPool 的corePoolSize 被设置为空(0)，maximumPoolSize被设置�
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/CachedThreadPool运行示意.png ':size=500')
+![](../../assets/cs-note/java-concurrent/CachedThreadPool运行示意.png ':size=500')
 </div>
 
 1. 首先执行 SynchronousQueue.offer(Runnable task) 提交任务到任务队列。如果当前 maximumPool 中有闲线程正在执行 SynchronousQueue.poll(keepAliveTime,TimeUnit.NANOSECONDS)，那么主线程执行 offer 操作与空闲线程执行的 poll 操作配对成功，主线程把任务交给空闲线程执行，execute()方法执行完成，否则执行下面的步骤 2；
@@ -636,7 +636,7 @@ ScheduledThreadPoolExecutor 和 Timer 的比较：
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/ScheduledThreadPoolExecutor运行示意.png ':size=500')
+![](../../assets/cs-note/java-concurrent/ScheduledThreadPoolExecutor运行示意.png ':size=500')
 </div>
 
 **ScheduledThreadPoolExecutor 的执行主要分为两大部分：**
@@ -652,7 +652,7 @@ ScheduledThreadPoolExecutor 为了实现周期性的执行任务，对 ThreadPoo
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/ScheduledThreadPoolExecutor执行周期任务运行示意.png ':size=500')
+![](../../assets/cs-note/java-concurrent/ScheduledThreadPoolExecutor执行周期任务运行示意.png ':size=500')
 </div>
 
 1. 线程 1 从 DelayQueue 中获取已到期的 ScheduledFutureTask(DelayQueue.take())。到期任务是指 ScheduledFutureTask的 time 大于等于当前系统的时间；
@@ -671,7 +671,7 @@ FutureTask的状态迁移的示意:
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/FutureTask的状态迁移示意图.png ':size=500')
+![](../../assets/cs-note/java-concurrent/FutureTask的状态迁移示意图.png ':size=500')
 </div>
 
 当FutureTask处于未启动或已启动状态时，执行FutureTask.get()方法将导致调用线程阻塞；当FutureTask处于已完成状态时，执行FutureTask.get()方法将导致调用线程立即返回结果或抛出异常。
@@ -692,7 +692,7 @@ AQS被作为“模板方法模式”的基础类提供给FutureTask的内部子�
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/FutureTask的设计示意图.png ':size=500')
+![](../../assets/cs-note/java-concurrent/FutureTask的设计示意图.png ':size=500')
 </div>
 
 FutureTask.get()方法会调用AQS.acquireSharedInterruptibly(int arg)方法，这个方法的执行过程如下。
@@ -711,7 +711,7 @@ FutureTask.run()的执行过程如下。
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/FutureTask的级联唤醒示意图.png ':size=500')
+![](../../assets/cs-note/java-concurrent/FutureTask的级联唤醒示意图.png ':size=500')
 </div>
 
 假设开始时FutureTask处于未启动状态或已启动状态，等待队列中已经有3个线程(A、B和C)在等待。此时，线程D执行get()方法将导致线程D也到等待队列中去等待。
@@ -724,7 +724,7 @@ Fork/Join框架是Java 7提供的一个用于并行执行任务的框架，是�
 
 <div align="center"> 
 
-![](../../pictures/java-concurrent/Fork-Join的运行流程图.png ':size=500')
+![](../../assets/cs-note/java-concurrent/Fork-Join的运行流程图.png ':size=500')
 </div>
 
 **工作窃取(work-stealing)算法**：假如我们需要做一个比较大的任务，我们可以把这个任务分割为若干互不依赖的子任务，为了减少线程间的竞争，于是把这些子任务分别放到不同的队列里，并为每个队列创建一个单独的线程来执行队列里的任务，线程和队列一一对应，比如A线程负责处理A队列里的任务。但是有的线程会先把自己队列里的任务干完，而其他线程对应的队列里还有任务等待处理。干完活的线程与其等着，不如去帮其他线程干活，于是它就去其他线程的队列里窃取一个任务来执行。而在这时它们会访问同一个队列，所以为了减少窃取任务线程和被窃取任务线程之间的竞争，通常会使用双端队列，被窃取任务线程永远从双端队列的头部拿任务执行，而窃取任务的线程永远从双端队列的尾部拿任务执行。

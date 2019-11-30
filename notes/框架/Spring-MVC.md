@@ -46,7 +46,7 @@ MVC框架模式是一种复合模式，MVC的三个核心部件分别是
 
 <div align="center">
 
-![](../../pictures/framework/spring/springmvc-mvc.gif ':size=600')
+![](../../assets/cs-note/framework/spring/springmvc-mvc.gif ':size=600')
 </div>
 
 1. 浏览器发送请求到控制器;
@@ -93,7 +93,7 @@ Spring MVC采用了松散耦合的可插拔组件结构，比其他的MVC框架�
 
 # SpringMVC请求响应
 
-![](../../pictures/framework/spring/SpringMVC请求响应处理流程.png)
+![](../../assets/cs-note/framework/spring/SpringMVC请求响应处理流程.png)
 
 具体步骤：
 1. 发起请求到前端控制器(DispatcherServlet)
@@ -142,11 +142,11 @@ Spring MVC采用了松散耦合的可插拔组件结构，比其他的MVC框架�
 
 ## SpringMVC工作详解
 
-![](../../pictures/framework/spring/spring-mvc-run.png)
+![](../../assets/cs-note/framework/spring/spring-mvc-run.png)
 
 ### 处理器映射 HandlerMapping
 
-![](../../pictures/framework/spring/spring-mvc-run-HandlerMapping.png)
+![](../../assets/cs-note/framework/spring/spring-mvc-run-HandlerMapping.png)
 
 
 SpringMVC 内部是根据 HandlerMapping 将 Request 和 Controller 里面的方法对应起来的。
@@ -154,7 +154,7 @@ SpringMVC 内部是根据 HandlerMapping 将 Request 和 Controller 里面的方
 
 `HandlerMapping` 只是一个接口类，不同的实现类有不同的匹对方式，根据功能的不同我们需要在 SpringMVC 容器中注入不同的映射处理器 `HandlerMapping。`
 
-![](../../pictures/framework/spring/spring-mvc-HandlerMapping过程.png)
+![](../../assets/cs-note/framework/spring/spring-mvc-HandlerMapping过程.png)
 
 #### HandlerMapping 接口
 
