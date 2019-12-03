@@ -17,7 +17,7 @@
     * [实现对比](#实现对比)
 * [Spring 事务](#Spring-事务)
   * [Spring事务管理方式](#Spring事务管理方式)
-  * [Spring事务管理接口：](#Spring事务管理接口)
+  * [Spring事务管理接口](#Spring事务管理接口)
   * [事务属性](#事务属性)
     * [事务隔离级别](#事务隔离级别)
     * [事务传播行为](#事务传播行为)
@@ -25,6 +25,12 @@
     * [事务只读属性](#事务只读属性)
     * [事务回滚规则](#事务回滚规则)
 * [Spring 注解](#Spring-注解)
+  * [声明Bean](#声明Bean)
+  * [注入Bean](#注入Bean)
+  * [配置类相关注解](#配置类相关注解)
+  * [切面(AOP)相关注解](#切面AOP相关注解)
+  * [属性注入](#属性注入)
+  * [事务相关注解](#事务相关注解)
 * [Spring 中的设计模式](#Spring-中的设计模式)
   * [工厂模式](#工厂模式)
   * [单例模式](#单例模式)
@@ -302,7 +308,7 @@ Spring 管理事务的方式
 2. 基于注解的声明式事务：基于 @Transactional 的全注解方式： 将声明式事务管理简化到了极致。开发人员只需在配置文件中加上一行启用相关后处理 Bean 的配置，然后在需要实施事务管理的方法或者类上使用 @Transactional 指定事务规则即可实现事务管理，而且功能也不必其他方式逊色。
 
 
-## Spring事务管理接口：
+## Spring事务管理接口
 
 
 - PlatformTransactionManager： （平台）事务管理器
@@ -381,6 +387,104 @@ Exception分为运行时异常RuntimeException和非运行时异常。事务管�
 在`@Transactional`注解中如果不配置`rollbackFor`属性,那么事物只会在遇到`RuntimeException`的时候才会回滚,加上`rollbackFor=Exception.class`,可以让事物在遇到非运行时异常时也回滚。
 
 # Spring 注解
+
+## 声明Bean
+
+@**Component**
+
+可以使用此注解描述Spring中的Bean，但它只是一个泛化的概念，仅仅表现一个组件（Bean），并且可以作用在任何层次。
+
+@**Repository**
+
+用于将数据访问层(DAO层)的类标识为Spring中的Bean，其功能与@Component相同。
+
+@**Service**
+
+通常作用在业务层(Service层)用于将业务层的类标识为Spring中的Bean，其功能与@Component相同。
+
+@**Controller**
+
+通常作用在控制层(如SpringMVC的Controler)用于将控制层的类表示为为Spring中的Bean，其功能与@Component相同。
+
+## 注入Bean
+
+@**Autowired**
+
+用于对Bean的属性变量、属性的setter方法及构造方法进行标注，配合相应的注解处理器完成Bean的自动配置工作。默认按照Bean的类型(byType)进行装配。
+
+@**Resource**
+
+其作用与@Autowired一样。 其区别在于@Autowired默认按照Bean类型装配，而@Resource默认按照Bean实例名称进行装配。@Resource中有两个实例类型。name和type。Spring 将name属性解析为Bean实例名称(id)，type 属性解析为Bean实例类型，如果指定name属性，则接实例名称进行装配；如果指定type属性，则按Bean类型进行装配；如果都不指定，则先按Bean实例名称装配，如果不能匹配，再按照Bean类型进行装配:如无法匹配，则抛出NoSuchBeanDefinitionException异常。
+
+## 配置类相关注解
+
+@**Configuration**
+
+声明当前类为配置类，其中内部组合了@Component注解，表明这个类是一个bean，相当于xml形式的Spring配置；
+
+使用@Configuration，所有标记为@Bean的方法将被包装成一个CGLIB包装器，它的工作方式就好像是这个方法的第一个调用，那么原始方法的主体将被执行，最终的对象将在spring上下文中注册。所有进一步的调用只返回从上下文检索的bean。
+
+@**Bean**
+
+注解在方法上，声明当前方法的返回值为一个bean
+
+@**ComponentScan**
+
+用于对Component进行扫描
+
+@**WishlyConfiguration**
+
+为@Configuration与@ComponentScan的组合注解，可以替代这两个注解
+
+## 切面(AOP)相关注解
+
+Spring支持AspectJ的注解式切面编程。
+
+在java配置类中使用@EnableAspectJAutoProxy注解开启Spring对AspectJ代理的支持
+
+@**Aspect**
+
+声明一个切面
+
+@**PointCut**
+
+声明切点
+
+@**Before**
+
+在方法执行之前执行（方法上）
+
+@**After**
+
+在方法执行之后执行（方法上）
+
+@**AfterReturning**
+
+后置通知,必须切点正确执行
+
+@**AfterThrowing**
+
+异常通知
+
+@**Around**
+
+环绕通知
+
+## 属性注入
+
+@**Value**
+- 注入普通字符
+- 注入操作系统属性
+- 注入表达式结果
+- 注入其它bean属性
+- 注入文件资源
+- 注入网站资源
+- 注入配置文件
+
+## 事务相关注解
+
+@**Transactional**
+
 
 # Spring 中的设计模式
 

@@ -24,6 +24,7 @@
   * [Servlet Listener](#Servlet-Listener)
   * [Servlet 线程安全问题](#Servlet-线程安全问题)
     * [Servlet 同时处理多请求访问](#Servlet-同时处理多请求访问)
+    * [Servlet 单线程模式](#Servlet-单线程模式)
   * [Servlet 应用细节](#Servlet-应用细节)
     * [Servlet URL 映射](#Servlet-URL-映射)
     * [Servlet与普通Java类的区别](#Servlet与普通Java类的区别)
@@ -207,6 +208,31 @@ Request对象中获取请求信息的方法
     - 注意：如果要获取的请求数据不存在，不会报错，返回null。
     - 注意：request对象由tomcat服务器创建，并作为实参传递给处理请求的servlet的service方法。
 
+#### getAttribute() 和 getParameter()
+
+**从获取方向来看：**
+
+`getParameter()`是获取 POST/GET 传递的参数值；
+
+`getAttribute()`是获取对象容器中的数据值；
+
+**从用途来看：**
+
+`getParameter()`用于客户端重定向时，即点击了链接或提交按扭时传值用，即用于在用表单或url重定向传值时接收数据用。
+
+`getAttribute()` 用于服务器端重定向时，即在 sevlet 中使用了 forward 函数,或 struts 中使用了
+mapping.findForward。 getAttribute 只能收到程序用 setAttribute 传过来的值。
+
+另外，可以用 `setAttribute()`,`getAttribute()` 发送接收对象.而 `getParameter()` 显然只能传字符串。
+`setAttribute()` 是应用服务器把这个对象放在该页面所对应的一块内存中去，当你的页面服务器重定向到另一个页面时，应用服务器会把这块内存拷贝另一个页面所对应的内存中。这样`getAttribute()`就能取得你所设下的值，当然这种方法可以传对象。session也一样，只是对象在内存中的生命周期不一样而已。`getParameter()`只是应用服务器在分析你送上来的 request页面的文本时，取得你设在表单或 url 重定向时的值。
+
+**总结：**
+
+`getParameter()`返回的是String,用于读取提交的表单中的值;（获取之后会根据实际需要转换为自己需要的相应类型，比如整型，日期类型啊等等）
+
+`getAttribute()`返回的是Object，需进行转换,可用`setAttribute()`设置成任意对象，使用很灵活，可随时用
+
+
 **请求中文乱码解决**:
 - 使用String进行数据重新编码：uname=new String(uname.getBytes("iso8859-1"),"utf-8");
 - 使用公共配置
@@ -270,14 +296,29 @@ Response对象的使用：
 - 如果请求中有表单数据，而数据又比较重要，不能重复提交，建议使用重定向。
 - 如果请求被Servlet接收后，无法进行处理，建议使用重定向定位到可以处理的资源。
 
-**与请求转发的区别**
-- 定义
+#### 与请求转发的区别
+
+**请求转发（Forward）** 通过RequestDispatcher对象的forward（HttpServletRequest request,HttpServletResponse response）方法实现的。RequestDispatcher可以通过HttpServletRequest 的getRequestDispatcher()方法获得。例如下面的代码就是跳转到login_success.jsp页面。
+```java
+     request.getRequestDispatcher("login_success.jsp").forward(request, response);
+```
+**重定向（Redirect）**  是利用服务器返回的状态码来实现的。客户端浏览器请求服务器的时候，服务器会返回一个状态码。服务器通过 `HttpServletResponse` 的 `setStatus(int status)` 方法设置状态码。如果服务器返回301或者302，则浏览器会到新的网址重新请求该资源。
+
+
+- **定义**
   - 一个web资源收到客户端请求后，通知服务器去调用另外一个web资源进行处理，称之为请求转发  /307。
   - 一个web资源收到客户端请求后，通知浏览器去访问另外一个web资源进行处理，称之为请求重定向/302。
-- 重定向是两次请求(重定向的第二个请求一定是GET)，转发是一次请求（在内部转发的）
-- 重定向地址栏地址会变化，转发地址栏地址不变
-- 重定向可以访问外部网站资源，转发只能访问内部资源
-- 转发的性能要优于重定向
+- **行为**：转发是服务器行为，重定向是客户端行为
+- **请求数目**：重定向是两次请求(重定向的第二个请求一定是GET)，转发是一次请求（在内部转发的）
+- **地址栏**
+  - redirect是服务端根据逻辑,发送一个状态码,告诉浏览器重新去请求那个地址.所以地址栏显示的是新的URL
+  - forward是服务器请求资源,服务器直接访问目标地址的URL,把那个URL的响应内容读取过来,然后把这些内容再发给浏览器.浏览器根本不知道服务器发送的内容从哪里来的,所以它的地址栏还是原来的地址
+- **访问资源**：重定向可以访问外部网站资源，转发只能访问内部资源
+- **数据共享**：forward转发页面和转发到的页面可以共享request里面的数据；redirect:不能共享数据
+- **运用地方**
+  - forward一般用于用户登陆的时候,根据角色转发到相应的模块.
+  - redirect一般用于用户注销登陆时返回主页面和跳转到其它的网站等
+- **效率**：转发的性能要优于重定向
 
 ### ServletConfig
 
@@ -540,6 +581,14 @@ Servlet容器默认是采用单实例多线程的方式处理多个请求的：
 - 过线程池来响应多个请求，提高了请求的响应时间； 
 - Servlet容器并不关心到达的Servlet请求访问的是否是同一个Servlet还是另一个Servlet，直接分配给它一个新的线程；如果是同一个Servlet的多个请求，那么Servlet的service方法将在多线程中并发的执行； 
 - 每一个请求由ServletRequest对象来接受请求，由ServletResponse对象来响应该请求；
+
+### Servlet 单线程模式
+
+对于JSP页面，可以通过page指令进行设置。 `<%@page isThreadSafe="false"%>`
+
+对于Servlet，可以让自定义的Servlet实现SingleThreadModel标识接口。
+
+说明：如果将JSP或Servlet设置成单线程工作模式，会导致每个请求创建一个Servlet实例，这种实践将导致严重的性能问题（服务器的内存压力很大，还会导致频繁的垃圾回收），所以通常情况下并不会这么做。
 
 ## Servlet 应用细节
 

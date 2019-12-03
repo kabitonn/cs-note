@@ -19,6 +19,7 @@
     * [参数解析 HandlerAdapter Handler](#参数解析-HandlerAdapter-Handler)
     * [视图解析 View & ViewResolver](#视图解析-View--ViewResolver)
     * [标签 `<mvc:annotation-driven/>`](#标签-mvcannotation-driven)
+* [Spring MVC 注解](#Spring-MVC-注解)
 <!-- GFM-TOC --> 
 
 # Spring MVC 介绍
@@ -379,3 +380,54 @@ AnnotationDrivenBeanDefinitionParser，为 `<annotation-driven />` MVC名称空�
 **其他**
 - 注册 org.springframework.util.AntPathMatcher 和 org.springframework.web.util.UrlPathHelper 以供 RequestMappingHandlerMapping、ViewControllers 的 HandlerMapping 和 HandlerMapping 服务资源是使用。
 
+
+# Spring MVC 注解
+
+@**EnableWebMvc**
+ 
+在配置类中开启Web MVC的配置支持，如一些ViewResolver或者MessageConverter等，若无此句，重写WebMvcConfigurerAdapter方法（用于对SpringMVC的配置）。
+
+@**Controller**
+
+声明该类为SpringMVC中的Controller
+
+@**RequestMapping**
+
+用于映射Web请求，包括访问路径和参数（类或方法上）
+
+@**ResponseBody**
+
+支持将返回值放在response内，而不是一个页面，通常用户返回json数据（返回值旁或方法上）
+
+@**RequestBody**
+
+允许request的参数在request体中，而不是在直接连接在地址后面。（放在参数前）
+
+@**RequestParam**
+
+将请求的参数绑定到方法中的参数上，有required参数，默认情况下，required=true，也就是该参数必须要传。
+
+@**PathVariable**
+
+用于接收路径参数，比如@RequestMapping(“/hello/{name}”)申明的路径，将注解放在参数中前，即可获取该值，通常作为Restful的接口实现方法。
+
+@**RestController**
+
+该注解为一个组合注解，相当于@Controller和@ResponseBody的组合，注解在类上，意味着，该Controller的所有方法都默认加上了@ResponseBody。
+
+@**ControllerAdvice**
+
+通过该注解，我们可以将对于控制器的全局配置放置在同一个位置，注解了@Controller的类的方法可使用@ExceptionHandler、@InitBinder、@ModelAttribute注解到方法上， 
+这对所有注解了 @RequestMapping的控制器内的方法有效。
+
+@**ExceptionHandler**
+
+用于全局处理控制器里的异常
+
+@**InitBinder**
+
+用来设置WebDataBinder，WebDataBinder用来自动绑定前台请求参数到Model中。
+
+@**ModelAttribute**
+
+本来的作用是绑定键值对到Model里，在@ControllerAdvice中是让全局的@RequestMapping都能获得在此处设置的键值对。
