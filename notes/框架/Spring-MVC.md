@@ -5,15 +5,20 @@
     * [MVC模式在Web中应用](#MVC模式在Web中应用)
   * [Spring MVC](#Spring-MVC)
     * [SpringMVC 特点](#SpringMVC-特点)
-* [SpringMVC请求响应](#SpringMVC请求响应)
-  * [SpringMVC组件](#SpringMVC组件)
+* [Spring MVC请求响应过程](#Spring-MVC请求响应过程)
+  * [Spring MVC组件](#Spring-MVC组件)
     * [DispatcherServlet 前端控制器](#DispatcherServlet-前端控制器)
     * [HandlerMapping 处理器映射器](#HandlerMapping-处理器映射器)
     * [HandlerAdapter 处理器适配器](#HandlerAdapter-处理器适配器)
     * [Handler 处理器](#Handler-处理器)
     * [ViewResolver 视图解析器](#ViewResolver-视图解析器)
-  * [SpringMVC工作详解](#SpringMVC工作详解)
+    * [View 视图](#View-视图)
+  * [Spring MVC工作详解](#Spring-MVC工作详解)
     * [处理器映射 HandlerMapping](#处理器映射-HandlerMapping)
+    * [处理器适配器 HandlerAdapter](#处理器适配器-HandlerAdapter)
+    * [参数解析 HandlerAdapter Handler](#参数解析-HandlerAdapter-Handler)
+    * [视图解析 View & ViewResolver](#视图解析-View--ViewResolver)
+    * [标签 `<mvc:annotation-driven/>`](#标签-mvcannotation-driven)
 <!-- GFM-TOC --> 
 
 # Spring MVC 介绍
@@ -91,7 +96,7 @@ Spring MVC采用了松散耦合的可插拔组件结构，比其他的MVC框架�
 9. 非常容易与其它视图技术集成，如Velocity、FreeMarker等，因为模型数据不放在特定的API里，而是放在一 个Model里（Map数据结构实现，因此很容易被其他框架使用）。
 10. RESTful风格的支持、简单的文件上传、约定优于配置的契约式编程支持、基于注解的零配置支持。
 
-# SpringMVC请求响应
+# Spring MVC请求响应过程
 
 ![](../../assets/cs-note/framework/spring/SpringMVC请求响应处理流程.png)
 
@@ -109,7 +114,7 @@ Spring MVC采用了松散耦合的可插拔组件结构，比其他的MVC框架�
 11. 前端控制器向用户响应结果
 
 
-## SpringMVC组件
+## Spring MVC组件
 
 ### DispatcherServlet 前端控制器
 
@@ -140,13 +145,22 @@ Spring MVC采用了松散耦合的可插拔组件结构，比其他的MVC框架�
 - ViewResolver 负责将处理结果生成 View 视图，ViewResolver 首先根据逻辑视图名解析成物理视图名即具体的页面地址，再生成 View 视图对象，最后对 View 进行渲染将处理结果通过页面展示给用户。
 - 是SpringMVC中必要的组件之一。SpringMVC提供默认视图解析器。
 
-## SpringMVC工作详解
+### View 视图
+
+View是一个接口，实现类支持不同的View类型（jsp、freemarker、pdf...）需要工程师开发
+
+
+## Spring MVC工作详解
 
 ![](../../assets/cs-note/framework/spring/spring-mvc-run.png)
 
+![](../../assets/cs-note/framework/spring/spring-mvc-src-logic.png)
+
 ### 处理器映射 HandlerMapping
 
-![](../../assets/cs-note/framework/spring/spring-mvc-run-HandlerMapping.png)
+[处理器映射详解](https://www.jianshu.com/p/f04816ee2495)
+
+<!-- ![](../../assets/cs-note/framework/spring/spring-mvc-run-HandlerMapping.png) -->
 
 
 SpringMVC 内部是根据 HandlerMapping 将 Request 和 Controller 里面的方法对应起来的。
@@ -159,25 +173,209 @@ SpringMVC 内部是根据 HandlerMapping 将 Request 和 Controller 里面的方
 #### HandlerMapping 接口
 
 
+容器被初始化的时候会被调用，加载容器中注入的 HandlerMapping。其实常用到的 HandlerMapping 都是由 `<mvc:annotation-driven />` 标签帮我们注册的(包括 RequestMappingHandlerMapping 和 BeanNameUrlHandlerMapping)，如果没有写该标签系统也会帮我们注入默认的映射器，当然也有些需要我们自己手动注入。
 
-**类结构**
-- HandlerMapping
-  - AbstractHandlerMapping
-    - AbstractUrlHandlerMapping
-      - BeanNameUrlHandlerMapping
-      - SimpleUrlHandlerMapping
-    - AbstractHandlerMethodMapping
+在 HandlerMapping 接口中只有一个方法
+```java
+    HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception;
+```
 
-#### AbstractHandlerMapping
+![](../../assets/cs-note/framework/spring/HandlerMapping类结构层次.png)
 
-#### AbstractUrlHandlerMapping
+**AbstractHandlerMapping**
 
-##### BeanNameUrlHandlerMapping
+实现 `getHandler()` 接口方法得到 HandlerExecutionChain 对象
+
+`getHandler()` 调用抽象方法 `getHandlerInternal()` 匹配并返回对应的 Handler 对象
+
+##### 1. AbstractUrlHandlerMapping
+
+URL 映射的抽象基类，提供将处理程序映射到 Controller，所以该类最终直接返回的 handler 就是 Controller 对象
+
+- 实现父抽象类的抽象方法 `getHandlerInternal()` 匹配并返回对应的 Handler 对象
+- 根据路径匹对 handler 的方法 `lookupHandler()`
+- 从 `this.handlerMap` 中通过 urlPath 匹对找到对应的 handler 对象
+- `registerHandler(String urlPath, Object handler)` 在子类中被调用将 handler 对象加入到 this.handlerMap 
+
+AbstractUrlHandlerMapping 的子类从大致分为两类：
+- 间接继承 AbstractUrlHandlerMapping 的 BeanNameUrlHandlerMapping
+- 直接继承 AbstractUrlHandlerMapping 的 SimpleUrlHandlerMapping
+
+**1.1 BeanNameUrlHandlerMapping**
+
+在 SpringMVC 容器中，且在注入了 `BeanNameUrlHandlerMapping` 映射器的时候，只要是以 "/" 开头的 bean 的 name，都会作为该映射器匹配的 Handler 对象
+
+注意手动注入 BeanNameUrlHandlerMapping 映射器记得不要跟 `<mvc:annotation-driven />` 标签自动帮我们注入重复(如自己手动注入要么放在 `<mvc:annotation-driven />` 标签之前，要么直接不写)。
+注意自定义 Controller 实现类注入 bean 的 id 或 name 必须以 "/" 开头，BeanNameUrlHandlerMapping 映射器主要映射以 "/" 开头的 beanName。
 
 
-##### SimpleUrlHandlerMapping
+**1.2 SimpleUrlHandlerMapping**
 
-#### AbstractHandlerMethodMapping
+SimpleUrlHandlerMapping 映射器跟前面 BeanNameUrlHandlerMapping 映射器有点不一样。后者是有点类似遍历容器里面有所的 bean 的 name 或 id 找到匹配的，并且 bean 的 name 或 id 有特殊要求，匹配的则加入。而前者则是先将加入该映射器的 handler 先加进该映射器的一个集合属性里面，容器初始化的时候免去了遍历麻烦的步骤。
+
+##### 2. AbstractHandlerMethodMapping
+
+AbstractHandlerMethodMapping 最终获取的 handler 是 `HandlerMethod` 类型对象。
+
+类的实现链
+- AbstractHandlerMethodMapping
+  - RequestMappingInfoHandlerMapping
+    - RequestMappingHandlerMapping 
+
+**2.1 HandlerMethod**
+
+HandlerMethod 其实可以简单理解为保持方法信息的pojo类
+
+**2.2 RequestMappingInfo 类**
+
+主要用来记录方法上 @RequestMapping() 注解里面的参数，针对 RequestMappingHandlerMapping 映射器来使用。
+
+RequestMappingInfo 对象是用来装载方法的匹配相关信息，每个匹配的方法都会对应一个 RequestMappingInfo 对象
+
+**2.3 RequestMappingHandlerMapping**
+
+存储映射关系对象(`MappingRegistry`)
+
+该实体类里面最重要的两个记录集合分别是 mappingLookup 和 urlLookup 
+
+- urlLookup：主要用来记录 lookupPath 请求路径对应的 mapping 集合。这里 Spring 留了一个很活的机制，拿 @RequestMapping 注解来说，他的 value 属性本身就是一个字符数组，在多重设置中难免有路径重复的，所以最终有可能会出现一个 lookupPath 对应多个 RequestMappingInfo，最终在请求过来的时候给了自定义抽象方法让实现类自己实现择优的方式MutivalueMap 是 SpringMVC 自定义的一个 Map 类，key 对应的 value 是一个集合，这从名字上也能看出来。
+
+- mappingLookup：key 是 mapping 对象，value 是 HandlerMethod 对象，最终是通过 lookupPath 在 urlLookup 集合中找到对应的 mapping 对象，通过 mapping 在 mappingLookup 集合中找到 HandlerMethod 对象。
 
 
+#### 总结
+
+现在开发基本都不用 AbstractUrlHandlerMapping 这种类型的映射器了，但是 SpringMVC 内部还有用到的地方，例如直接 <mvc:view-controller path="" view-name=""/> 标签配置资源不经过视图控制器直接跳转就用到了 SimpleUrlHandlerMapping 这种映射器。AbstractUrlHandlerMapping 匹对解析对应请求最终返回的 handler 是 Controller 对象。
+
+现在习惯直接用 @Controller 和 @RequestMapping 这样注解来描述视图控制器的逻辑，这种资源映射用的是 AbstractHandlerMethodMapping 抽象类的子类 RequestMappingHandlerMapping 映射器，匹对解析对应的请求返回HandlerMethod 对象。
+
+
+### 处理器适配器 HandlerAdapter
+
+<!-- ![](../../assets/cs-note/framework/spring/spring-mvc-run-HandlerAdapter.png) -->
+
+[处理器适配器 详解](https://www.jianshu.com/p/23ad68d8b421)
+
+不同的映射处理器(HandlerMapping) 映射出来的 handler 对象是不一样的，AbstractUrlHandlerMapping 映射器映射出来的是 handler 是 Controller 对象，AbstractHandlerMethodMapping 映射器映射出来的 handler 是 HandlerMethod 对象。映射的处理器也应该有很多种，不同的映射由不同的适配器来负责解析。
+
+#### HandlerAdapter 接口
+
+![](../../assets/cs-note/framework/spring/HandlerAdapter类结构层次.png)
+
+```java
+public interface HandlerAdapter {
+    boolean supports(Object var1);
+
+    @Nullable
+    ModelAndView handle(HttpServletRequest var1, HttpServletResponse var2, Object var3) throws Exception;
+
+    long getLastModified(HttpServletRequest var1, Object var2);
+}
+```
+
+### 参数解析 HandlerAdapter Handler
+
+HandlerAdapter 描述了 handler 是怎么匹配到合适的适配器，进行 handler 对应方法的执行。其他几种适配器还好，但是 RequestMappingHandlerAdapter 适配器对应接下来的参数解析及绑定并执行并不是那么简单。
+
+<!-- ![](../../assets/cs-note/framework/spring/spring-mvc-run-Handler.png) -->
+
+RequestMappingHandlerAdapter 大概解析流程如下
+
+![](../../assets/cs-note/framework/spring/spring-mvc-run-RequestMappingHandlerAdapter解析流程.png)
+
+[参数解析 HandlerAdapter Handler](https://www.jianshu.com/p/2bfd65bc9ce4)
+
+[自定义参数解析 HandlerAdapter Handler](https://www.jianshu.com/p/6eba4e2c6cab)
+
+
+#### HandlerMethod
+
+- HandlerMethod 封装方法定义相关的信息 (如类、方法、参数等)
+- InvocableHandlerMethod 参数准备委托 HandlerMethodArgumentResolver 进行具体的解析
+- ServletInvocableHandlerMethod 添加返回值处理职责，ResponseStatus 处理
+
+在容器初始化的时候，RequestMappingHandlerMapping 映射处理器就将 @RequestMapping 描述的方法以 RequestMappingInfo 为 key，HandlerMethod 为 value 放进自己的缓存 
+
+#### 解析器
+
+参数解析器(HandlerMethodArgumentResolver)
+返回值的解析器(HandlerMethodReturnValueHandler)
+
+参数解析及转换的过程，先是通过参数解析器解析参数，然后再是转换器转换参数，最终绑定到对应 RequestMapping 方法参数上。
+
+有些开发场景中，SpringMVC 提供的参数解析器满足不了咱们的需求。例如在数据量大的提交环境中，提交数据用到了表单和JSON融合的方式，就是表单某个字段的 value 是JSON字符串。
+如果整个提交的数据体是JSON数据还好，导入Jackson架包，用 @RequestBody 修饰参数，最终 SpringMVC 会通过自带的 RequestResponseBodyMethodProcessor 解析器进行解析，使用 Jackson 提供的 MappingJackson2HttpMessageConverter 转换器将JSON数据转换成我们想要的格式。
+
+如果提交的是正常表单数据也好，用 @RequestParam 修饰参数，最终 SpringMVC 会通过自带的 RequestParamMethodArgumentResolver 解析器解析出表单里面的 value，然后找到合适的转换器将数据装换成我们想要的格式。
+
+
+
+### 视图解析 View & ViewResolver
+
+[视图解析 View & ViewResolver](https://www.jianshu.com/p/ec70ae3d1021)
+
+#### ModelAndView
+
+SpringMVC 内部最终会将返回的参数及视图名字封装成一个 ModelAndView 对象，这个对象包含两个部分：Model 是一个 HashMap 集合，View 一般则是一个 String 类型记录要跳转视图的名字或者是视图对象(如果是视图对象的话则直接跳过视图解析器的解析过程)
+
+#### 视图 View
+
+视图的作用是渲染模型数据，将模型里的数据以某种形式呈现给客户，其实就是 html、jsp 甚至 word、excel 文件；
+
+| 视图                    | 说明                                                                          |
+| ----------------------- | ----------------------------------------------------------------------------- |
+| InternalResourceView    | 将 JSP 或其他资源封装成一个视图，一般 JSP 页面用该视图类                      |
+| JstlView                | 继承自InternalResourceView，如果 JSP 页面使用了 JSTL 标签，则需要使用该视图类 |
+| AbstractPdfView         | PDF视图的抽象超类                                                             |
+| AbstractXlsView         | 传统XLS格式的Excel文档视图的便捷超类，与Apache POI 3.5及更高版本兼容。        |
+| AbstractXlsxView        | Office 2007 XLSX格式的Excel文档视图的便捷超类，兼容Apache POI 3.5及更高版本。 |
+| MappingJackson2JsonView | 将模型数据 通过 Jackson 开源框架的 ObjectMapper 以 JSON 方式输出              |
+
+#### 视图解析器 ViewResolver
+
+SpringMVC 为逻辑视图名的解析提供了不同的策略，可以在 Spring Web 上下文中配置一种或多种解析策略，并指定他们之间的先后顺序。
+
+- 每一种映射策略对应一个具体的视图解析器实现类。
+- 视图解析器的作用是将逻辑视图解析为一个具体的物理视图对象。
+- 所有的视图解析器都必须实现 ViewResolver 接口。
+- 可以选择一种或多种视图解析器，可以通过其 order 属性指定解析器的优先顺序，order 越小优先级越高。
+- SpringMVC 会按照视图解析器顺序的优先次序进行解析，直到返回视图对象。若无，则抛出 ServletException 异常。
+
+
+| 视图解析器                     | 说明                                                                                                                              |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| AbstractCachingViewResolver    | 一个抽象视图，继承该类可以让视图解析器具有缓存功能                                                                                |
+| XmlViewResolver                | 接受XML文件的视图解析器，默认配置文件在 /WEB-INF/views.xml                                                                        |
+| ResourceBundleViewResolver     | 使用properties配置文件的视图解析器，默认配置文件是类路径下的views.properties                                                      |
+| UrlBasedViewResolver           | 一个简单的视图解析器，不做任何匹配，需要视图名和实际视图文件名相同                                                                |
+| InternalResourceViewResolver   | UrlBasedViewResolver的一个子类，支持Servlet容器的内部类型（JSP、Servlet、以及JSTL等），可以使用setViewClass(..)指定具体的视图类型 |
+| FreeMarkerViewResolver         | 也是UrlBasedViewResolver的子类，用于FreeMarker视图技术                                                                            |
+| ContentNegotiatingViewResolver | 用于解析基于请求文件名或Accept header的视图                                                                                       |
+| BeanNameViewResolver           | 将逻辑视图名解析为一个 Bean，Bean 的 id 等于逻辑视图名                                                                            |
+
+
+### 标签 `<mvc:annotation-driven/>`
+
+`<mvc:annotation-driven/>`，这个标签会帮我们注入很多关键而实用的bean，但是用它也得小心跟自己手动注入的bean重复，会造成不必要的麻烦。
+
+所有的自定义命名空间（像mvc，context等）下的标签解析都是由BeanDefinitionParser 接口的实现类来完成的；`<mvc:annotation-driven/>`标签，找到对应的实现类是org.springframework.web.servlet.config.AnnotationDrivenBeanDefinitionParser。
+
+AnnotationDrivenBeanDefinitionParser，为 `<annotation-driven />` MVC名称空间元素提供配置。
+
+注册以下 **HandlerMappings** (映射器们)：
+- RequestMappingHandlerMapping 的排序为0，用于将请求映射到带@RequestMapping注释的控制器方法。
+- BeanNameUrlHandlerMapping 在排序为2，以将URL路径映射到控制器bean名称。
+
+注册以下 **HandlerAdapters** (适配器们)：
+- RequestMappingHandlerAdapter 用于使用带@RequestMapping注解的控制器方法处理请求。
+- HttpRequestHandlerAdapter 用于使用HttpRequestHandlers处理请求。
+- SimpleControllerHandlerAdapter 用于使用基于接口的控制器处理请求。
+  
+注册以下 **HandlerExceptionResolvers** (异常处理解析器们)：
+- ExceptionHandlerExceptionResolver，用于通过 org.springframework.web.bind.annotation.ExceptionHandler 方法处理异常。
+- ResponseStatusExceptionResolver 用于使用 org.springframework.web.bind.annotation.ResponseStatus 注释的异常。
+- DefaultHandlerExceptionResolver 用于解析已知的Spring异常类型
+  
+**其他**
+- 注册 org.springframework.util.AntPathMatcher 和 org.springframework.web.util.UrlPathHelper 以供 RequestMappingHandlerMapping、ViewControllers 的 HandlerMapping 和 HandlerMapping 服务资源是使用。
 

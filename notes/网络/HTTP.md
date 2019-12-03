@@ -1,68 +1,163 @@
 <!-- GFM-TOC -->
-* [一 、基础概念](#一-基础概念)
-    * [URI](#uri)
-    * [请求和响应报文](#请求和响应报文)
-* [二、HTTP 方法](#二http-方法)
-    * [GET](#get)
-    * [HEAD](#head)
-    * [POST](#post)
-    * [PUT](#put)
-    * [PATCH](#patch)
-    * [DELETE](#delete)
-    * [OPTIONS](#options)
-    * [CONNECT](#connect)
-    * [TRACE](#trace)
-* [三、HTTP 状态码](#三http-状态码)
-    * [1XX 信息](#1xx-信息)
-    * [2XX 成功](#2xx-成功)
-    * [3XX 重定向](#3xx-重定向)
-    * [4XX 客户端错误](#4xx-客户端错误)
-    * [5XX 服务器错误](#5xx-服务器错误)
-* [四、HTTP 首部](#四http-首部)
-    * [通用首部字段](#通用首部字段)
-    * [请求首部字段](#请求首部字段)
-    * [响应首部字段](#响应首部字段)
-    * [实体首部字段](#实体首部字段)
-* [五、具体应用](#五具体应用)
-    * [连接管理](#连接管理)
-    * [Cookie](#cookie)
-    * [缓存](#缓存)
-    * [内容协商](#内容协商)
-    * [内容编码](#内容编码)
-    * [范围请求](#范围请求)
-    * [分块传输编码](#分块传输编码)
-    * [多部分对象集合](#多部分对象集合)
-    * [虚拟主机](#虚拟主机)
-    * [通信数据转发](#通信数据转发)
-* [六、HTTPS](#六https)
-    * [加密](#加密)
-    * [认证](#认证)
-    * [完整性保护](#完整性保护)
-    * [HTTPS 的缺点](#https-的缺点)
-* [七、HTTP/2.0](#七http20)
-    * [HTTP/1.x 缺陷](#http1x-缺陷)
-    * [二进制分帧层](#二进制分帧层)
-    * [服务端推送](#服务端推送)
-    * [首部压缩](#首部压缩)
-* [八、HTTP/1.1 新特性](#八http11-新特性)
-* [九、GET 和 POST 比较](#九get-和-post-比较)
+* [一 、HTTP 介绍](#一-HTTP-介绍)
+  * [HTTP 简介](#HTTP-简介)
+  * [HTTP 特点](#HTTP-特点)
+  * [基本概念](#基本概念)
+    * [URI,URN,URL](#URIURNURL)
+* [二、HTTP 工作流程](#二HTTP-工作流程)
+  * [HTTP 交互流程](#HTTP-交互流程)
+  * [HTTP 工作原理](#HTTP-工作原理)
+  * [请求和响应报文](#请求和响应报文)
+    * [1. 请求报文](#1-请求报文)
+    * [2. 响应报文](#2-响应报文)
+  * [HTTP 请求方法](#HTTP-请求方法)
+  * [GET 和 POST 比较](#GET-和-POST-比较)
     * [作用](#作用)
     * [参数](#参数)
     * [安全](#安全)
     * [幂等性](#幂等性)
     * [可缓存](#可缓存)
-    * [XMLHttpRequest](#xmlhttprequest)
+    * [XMLHttpRequest](#XMLHttpRequest)
+  * [HTTP 状态码](#HTTP-状态码)
+* [三、HTTP 首部](#三HTTP-首部)
+  * [通用首部字段](#通用首部字段)
+  * [请求首部字段](#请求首部字段)
+  * [响应首部字段](#响应首部字段)
+  * [实体首部字段](#实体首部字段)
+* [四、具体应用](#四具体应用)
+  * [连接管理](#连接管理)
+    * [1. 短连接与长连接](#1-短连接与长连接)
+    * [2. 流水线](#2-流水线)
+  * [Cookie](#Cookie)
+    * [1. 用途](#1-用途)
+    * [2. 创建过程](#2-创建过程)
+    * [3. 分类](#3-分类)
+    * [4. 作用域](#4-作用域)
+    * [5. JavaScript](#5-JavaScript)
+    * [6. HttpOnly](#6-HttpOnly)
+    * [7. Secure](#7-Secure)
+    * [8. Session](#8-Session)
+    * [9. 浏览器禁用 Cookie](#9-浏览器禁用-Cookie)
+    * [10. Cookie 与 Session 选择](#10-Cookie-与-Session-选择)
+  * [缓存](#缓存)
+    * [1. 优点](#1-优点)
+    * [2. 实现方法](#2-实现方法)
+    * [3. Cache-Control](#3-Cache-Control)
+    * [4. 缓存验证](#4-缓存验证)
+  * [内容协商](#内容协商)
+    * [1. 类型](#1-类型)
+    * [2. Vary](#2-Vary)
+  * [内容编码](#内容编码)
+  * [范围请求](#范围请求)
+    * [1. Range](#1-Range)
+    * [2. Accept-Ranges](#2-Accept-Ranges)
+    * [3. 响应状态码](#3-响应状态码)
+  * [分块传输编码](#分块传输编码)
+  * [多部分对象集合](#多部分对象集合)
+  * [虚拟主机](#虚拟主机)
+  * [通信数据转发](#通信数据转发)
+    * [1. 代理](#1-代理)
+    * [2. 网关](#2-网关)
+    * [3. 隧道](#3-隧道)
+* [五、HTTPS](#五HTTPS)
+  * [加密](#加密)
+    * [1. 对称密钥加密](#1-对称密钥加密)
+    * [2. 非对称密钥加密](#2-非对称密钥加密)
+    * [3. HTTPS 采用的加密方式](#3-HTTPS-采用的加密方式)
+  * [认证](#认证)
+  * [完整性保护](#完整性保护)
+  * [HTTPS 的缺点](#HTTPS-的缺点)
+* [六、HTTP/1.1 新特性](#六HTTP11-新特性)
+* [七、HTTP/2.0](#七HTTP20)
+  * [HTTP/1.x 缺陷](#HTTP1x-缺陷)
+  * [二进制分帧层](#二进制分帧层)
+  * [服务端推送](#服务端推送)
+  * [首部压缩](#首部压缩)
 * [参考资料](#参考资料)
 <!-- GFM-TOC -->
 
 
-# 一 、基础概念
+# 一 、HTTP 介绍
 
-## URI
+## HTTP 简介
+
+HTTP协议，即超文本传输协议(Hypertext transfer protocol)。是一种详细规定了浏览器和万维网(WWW = World Wide Web)服务器之间互相通信的规则，通过因特网传送万维网文档的数据传送协议。
+
+HTTP协议作为TCP/IP模型中应用层的协议也不例外。HTTP协议通常承载于TCP协议之上，有时也承载于TLS或SSL协议层之上，这个时候，就成了我们常说的HTTPS。如下图：
+
+![](../../assets/cs-note/network/HTTP简介.png)
+
+HTTP是一个应用层协议，由请求和响应构成，是一个标准的客户端服务器模型。HTTP是一个无状态的协议。
+
+HTTP默认的端口号为80，HTTPS的端口号为443。
+
+浏览网页是HTTP的主要应用，但是这并不代表HTTP就只能应用于网页的浏览。HTTP是一种协议，只要通信的双方都遵守这个协议，HTTP就能有用武之地。比如咱们常用的QQ，迅雷这些软件，都会使用HTTP协议(还包括其他的协议)。
+
+## HTTP 特点
+
+- 简单快速：客户向服务器请求服务时，只需传送请求方法和路径。由于HTTP协议简单，使得HTTP服务器的程序规模小，因而通信速度很快。
+- 灵活：HTTP允许传输任意类型的数据对象。正在传输的类型由Content-Type加以标记。
+- HTTP 0.9和1.0使用非持续连接：限制每次连接只处理一个请求，服务器处理完客户的请求，并收到客户的应答后，即断开连接。HTTP 1.1使用持续连接：不必为每个web对象创建一个新的连接，一个连接可以传送多个对象，采用这种方式可以节省传输时间。
+- 无状态：HTTP协议是无状态协议。无状态是指协议对于事务处理没有记忆能力。缺少状态意味着如果后续处理需要前面的信息，则它必须重传，这样可能导致每次连接传送的数据量增大。另一方面，在服务器不需要先前信息时它的应答就较快。
+- 支持B/S及C/S模式。
+
+## 基本概念
+
+### URI,URN,URL
 
 URI 包含 URL 和 URN。
 
 <div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/8441b2c4-dca7-4d6b-8efb-f22efccaf331.png" width="500px"> </div><br>
+
+**URI 是uniform resource identifier**，统一资源标识符，用来唯一的标识一个资源。
+
+URI一般由三部组成
+- 访问资源的命名机制
+- 存放资源的主机名
+- 资源自身的名称，由路径表示，着重强调于资源。
+
+**URL 是uniform resource locator**，统一资源定位器，它是一种具体的URI，即URL可以用来标识一个资源，而且还指明了如何locate这个资源。
+
+URL一般由三部组成
+- 协议(或称为服务方式)
+- 存有该资源的主机IP地址(有时也包括端口号)
+- 主机资源的具体地址。如目录和文件名等
+
+**URN 是uniform resource name**，统一资源命名，是通过名字来标识资源，
+
+URI是以一种抽象的，高层次概念定义统一资源标识，而URL和URN则是具体的资源标识的方式。URL和URN都是一种URI。笼统地说，每个 URL 都是 URI，但不一定每个 URI 都是 URL。这是因为 URI 还包括一个子类，即统一资源名称 (URN)，它命名资源但不指定如何定位资源。
+
+
+
+# 二、HTTP 工作流程
+
+## HTTP 交互流程
+
+一次HTTP操作称为一个事务，其工作过程可分为四步：
+1. 首先客户机与服务器需要建立连接，HTTP的工作开始。
+2. 建立连接后，客户机发送一个请求给服务器，请求方式的格式为：统一资源标识符（URL）、协议版本号，后边是MIME信息包括请求修饰符、客户机信息和可能的内容。
+3. 服务器接到请求后，进行处理，然后将处理结果响应客户端，给予相应的响应信息，其格式为一个状态行，包括信息的协议版本号、一个成功或错误的代码，后边是MIME信息包括服务器信息、实体信息和可能的内容。
+4. 客户端接收服务器所返回的信息通过浏览器显示在用户的显示屏上，然后客户机与服务器断开连接。(HTTP1.1后不会立即关闭)
+
+如果在以上过程中的某一步出现错误，那么产生错误的信息将返回到客户端，有显示屏输出。对于用户来说，这些过程是由HTTP自己完成的，用户只要用鼠标点击，等待信息显示就可以了。
+
+## HTTP 工作原理
+
+HTTP协议定义Web客户端如何从Web服务器请求Web页面，以及服务器如何把Web页面传送给客户端。HTTP协议采用了请求/响应模型。客户端向服务器发送一个请求报文，请求报文包含请求的方法、URL、协议版本、请求头部和请求数据。服务器以一个状态行作为响应，响应的内容包括协议的版本、成功或者错误代码、服务器信息、响应头部和响应数据。
+
+以下是 HTTP 请求/响应的步骤：
+
+1. 客户端连接到Web服务器
+   - 一个HTTP客户端，通常是浏览器，与Web服务器的HTTP端口（默认为80）建立一个TCP套接字连接。例如，http://www.oakcms.cn。
+2. 发送HTTP请求
+   - 通过TCP套接字，客户端向Web服务器发送一个文本的请求报文，一个请求报文由请求行、请求头部、空行和请求数据4部分组成。
+3. 服务器接受请求并返回HTTP响应
+   - Web服务器解析请求，定位请求资源。服务器将资源复本写到TCP套接字，由客户端读取。一个响应由状态行、响应头部、空行和响应数据4部分组成。
+4. 释放连接TCP连接
+   - 若connection 模式为close，则服务器主动关闭TCP连接，客户端被动关闭连接，释放TCP连接;若connection 模式为keepalive，则该连接会保持一段时间，在该时间内可以继续接收请求
+5. 客户端浏览器解析HTML内容
+   - 客户端浏览器首先解析状态行，查看表明请求是否成功的状态代码。然后解析每一个响应头，响应头告知以下为若干字节的HTML文档和文档的字符集。客户端浏览器读取响应数据HTML，根据HTML的语法对其进行格式化，并在浏览器窗口中显示。
+
 
 ## 请求和响应报文
 
@@ -70,86 +165,45 @@ URI 包含 URL 和 URN。
 
 <div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/HTTP_RequestMessageExample.png" width=""/> </div><br>
 
+请求格式结构
+- 请求行：消息报头，一般用来说明客户端要使用的一些附加信息 
+- 请求头：请求方式、请求的地址和HTTP协议版本
+- 空行： 位于请求头和请求数据之间，空行是必须的。 
+- 请求数据：非必须。
+
+
 ### 2. 响应报文
 
 <div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/HTTP_ResponseMessageExample.png" width=""/> </div><br>
 
-# 二、HTTP 方法
+响应格式的结构： 
+- 响应行(状态行)：HTTP版本、状态码、状态消息 
+- 响应头：消息报头，客户端使用的附加信息 
+- 空行：响应头和响应实体之间的，必须的。 
+- 响应实体：正文，服务器返回给浏览器的信息
+
+
+## HTTP 请求方法
 
 客户端发送的  **请求报文**  第一行为请求行，包含了方法字段。
 
-## GET
+HTTP1.0定义了三种请求方法：GET, POST 和 HEAD方法。
+HTTP1.1新增了五种请求方法：OPTIONS, PUT, DELETE, TRACE 和 CONNECT 方法。
 
-> 获取资源
+| 请求方法 | 用途                             | 说明                                                                                                                               |
+| -------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| GET      | 获取资源                         | 请求指定的页面信息，并返回实体主体。                                                                                               |
+| HEAD     | 获取报文首部                     | 和 GET 方法类似，但是不返回报文实体主体部分。主要用于确认 URL 的有效性以及资源更新的日期时间等。                                   |
+| POST     | 传输实体主体                     | 向指定资源提交数据进行处理请求。数据被包含在请求体中。POST请求可能会导致新的资源的建立和/或已有资源的修改。                        |
+| PUT      | 上传文件                         | 从客户端向服务器传送的数据取代指定的文档的内容。由于自身不带验证机制，任何人都可以上传文件，因此存在安全性问题，一般不使用该方法。 |
+| DELETE   | 删除文件                         | 请求服务器删除指定的页面。与 PUT 功能相反，并且同样不带验证机制。                                                                  |
+| CONNECT  | 要求在与代理服务器通信时建立隧道 | HTTP/1.1协议中预留给能够将连接改为管道方式的代理服务器。                                                                           |
+| OPTIONS  | 查询支持的方法                   | 允许客户端查看服务器的性能。查询指定的 URL 能够支持的方法。会返回 `Allow: GET, POST, HEAD, OPTIONS` 这样的内容。                   |
+| TRACE    | 追踪路径                         | 回显服务器收到的请求，主要用于测试或诊断。                                                                                         |
+| PATCH    | 对资源进行部分修改               | PUT 也可以用于修改资源，但是只能完全替代原始资源，PATCH 允许部分修改。                                                             |
 
-当前网络请求中，绝大部分使用的是 GET 方法。
 
-## HEAD
-
-> 获取报文首部
-
-和 GET 方法类似，但是不返回报文实体主体部分。
-
-主要用于确认 URL 的有效性以及资源更新的日期时间等。
-
-## POST
-
-> 传输实体主体
-
-POST 主要用来传输数据，而 GET 主要用来获取资源。
-
-更多 POST 与 GET 的比较请见第九章。
-
-## PUT
-
-> 上传文件
-
-由于自身不带验证机制，任何人都可以上传文件，因此存在安全性问题，一般不使用该方法。
-
-```html
-PUT /new.html HTTP/1.1
-Host: example.com
-Content-type: text/html
-Content-length: 16
-
-<p>New File</p>
-```
-
-## PATCH
-
-> 对资源进行部分修改
-
-PUT 也可以用于修改资源，但是只能完全替代原始资源，PATCH 允许部分修改。
-
-```html
-PATCH /file.txt HTTP/1.1
-Host: www.example.com
-Content-Type: application/example
-If-Match: "e0023aa4e"
-Content-Length: 100
-
-[description of changes]
-```
-
-## DELETE
-
-> 删除文件
-
-与 PUT 功能相反，并且同样不带验证机制。
-
-```html
-DELETE /file.html HTTP/1.1
-```
-
-## OPTIONS
-
-> 查询支持的方法
-
-查询指定的 URL 能够支持的方法。
-
-会返回 `Allow: GET, POST, HEAD, OPTIONS` 这样的内容。
-
-## CONNECT
+**CONNECT**
 
 > 要求在与代理服务器通信时建立隧道
 
@@ -161,7 +215,7 @@ CONNECT www.example.com:443 HTTP/1.1
 
 <div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/dc00f70e-c5c8-4d20-baf1-2d70014a97e3.jpg" width=""/> </div><br>
 
-## TRACE
+**TRACE**
 
 > 追踪路径
 
@@ -171,61 +225,132 @@ CONNECT www.example.com:443 HTTP/1.1
 
 通常不会使用 TRACE，并且它容易受到 XST 攻击（Cross-Site Tracing，跨站追踪）。
 
-# 三、HTTP 状态码
+## GET 和 POST 比较
+
+### 作用
+
+GET 用于获取资源，而 POST 用于传输实体主体。
+
+### 参数
+
+GET 和 POST 的请求都能使用额外的参数，但是 GET 的参数是以查询字符串出现在 URL 中，而 POST 的参数存储在实体主体中。不能因为 POST 参数存储在实体主体中就认为它的安全性更高，因为照样可以通过一些抓包工具（Fiddler）查看。
+
+因为 URL 只支持 ASCII 码，因此 GET 的参数中如果存在中文等字符就需要先进行编码。例如 `中文` 会转换为 `%E4%B8%AD%E6%96%87`，而空格会转换为 `%20`。POST 参数支持标准字符集。
+
+```
+GET /test/demo_form.asp?name1=value1&name2=value2 HTTP/1.1
+```
+
+```
+POST /test/demo_form.asp HTTP/1.1
+Host: w3schools.com
+name1=value1&name2=value2
+```
+
+### 安全
+
+安全的 HTTP 方法不会改变服务器状态，也就是说它只是可读的。
+
+GET 方法是安全的，而 POST 却不是，因为 POST 的目的是传送实体主体内容，这个内容可能是用户上传的表单数据，上传成功之后，服务器可能把这个数据存储到数据库中，因此状态也就发生了改变。
+
+安全的方法除了 GET 之外还有：HEAD、OPTIONS。
+
+不安全的方法除了 POST 之外还有 PUT、DELETE。
+
+### 幂等性
+
+幂等的 HTTP 方法，同样的请求被执行一次与连续执行多次的效果是一样的，服务器的状态也是一样的。换句话说就是，幂等方法不应该具有副作用（统计用途除外）。
+
+所有的安全方法也都是幂等的。
+
+在正确实现的条件下，GET，HEAD，PUT 和 DELETE 等方法都是幂等的，而 POST 方法不是。
+
+GET /pageX HTTP/1.1 是幂等的，连续调用多次，客户端接收到的结果都是一样的：
+
+```
+GET /pageX HTTP/1.1
+GET /pageX HTTP/1.1
+GET /pageX HTTP/1.1
+GET /pageX HTTP/1.1
+```
+
+POST /add_row HTTP/1.1 不是幂等的，如果调用多次，就会增加多行记录：
+
+```
+POST /add_row HTTP/1.1   -> Adds a 1nd row
+POST /add_row HTTP/1.1   -> Adds a 2nd row
+POST /add_row HTTP/1.1   -> Adds a 3rd row
+```
+
+DELETE /idX/delete HTTP/1.1 是幂等的，即使不同的请求接收到的状态码不一样：
+
+```
+DELETE /idX/delete HTTP/1.1   -> Returns 200 if idX exists
+DELETE /idX/delete HTTP/1.1   -> Returns 404 as it just got deleted
+DELETE /idX/delete HTTP/1.1   -> Returns 404
+```
+
+### 可缓存
+
+如果要对响应进行缓存，需要满足以下条件：
+
+- 请求报文的 HTTP 方法本身是可缓存的，包括 GET 和 HEAD，但是 PUT 和 DELETE 不可缓存，POST 在多数情况下不可缓存的。
+- 响应报文的状态码是可缓存的，包括：200, 203, 204, 206, 300, 301, 404, 405, 410, 414, and 501。
+- 响应报文的 Cache-Control 首部字段没有指定不进行缓存。
+
+### XMLHttpRequest
+
+为了阐述 POST 和 GET 的另一个区别，需要先了解 XMLHttpRequest：
+
+> XMLHttpRequest 是一个 API，它为客户端提供了在客户端和服务器之间传输数据的功能。它提供了一个通过 URL 来获取数据的简单方式，并且不会使整个页面刷新。这使得网页只更新一部分页面而不会打扰到用户。XMLHttpRequest 在 AJAX 中被大量使用。
+
+- 在使用 XMLHttpRequest 的 POST 方法时，浏览器会先发送 Header 再发送 Data。但并不是所有浏览器会这么做，例如火狐就不会。
+- 而 GET 方法 Header 和 Data 会一起发送。
+
+## HTTP 状态码
 
 服务器返回的  **响应报文**  中第一行为状态行，包含了状态码以及原因短语，用来告知客户端请求的结果。
 
-| 状态码 | 类别 | 含义 |
-| :---: | :---: | :---: |
-| 1XX | Informational（信息性状态码） | 接收的请求正在处理 |
-| 2XX | Success（成功状态码） | 请求正常处理完毕 |
-| 3XX | Redirection（重定向状态码） | 需要进行附加操作以完成请求 |
-| 4XX | Client Error（客户端错误状态码） | 服务器无法处理请求 |
-| 5XX | Server Error（服务器错误状态码） | 服务器处理请求出错 |
+| 状态码 |               类别               |            含义            |
+| :----: | :------------------------------: | :------------------------: |
+|  1XX   |  Informational（信息性状态码）   |     接收的请求正在处理     |
+|  2XX   |      Success（成功状态码）       |      请求正常处理完毕      |
+|  3XX   |   Redirection（重定向状态码）    | 需要进行附加操作以完成请求 |
+|  4XX   | Client Error（客户端错误状态码） |     服务器无法处理请求     |
+|  5XX   | Server Error（服务器错误状态码） |     服务器处理请求出错     |
 
-## 1XX 信息
+**1XX 信息**
 
 -  **100 Continue** ：表明到目前为止都很正常，客户端可以继续发送请求或者忽略这个响应。
 
-## 2XX 成功
+**2XX 成功**
 
 -  **200 OK** 
-
 -  **204 No Content** ：请求已经成功处理，但是返回的响应报文不包含实体的主体部分。一般在只需要从客户端往服务器发送信息，而不需要返回数据时使用。
-
 -  **206 Partial Content** ：表示客户端进行了范围请求，响应报文包含由 Content-Range 指定范围的实体内容。
 
-## 3XX 重定向
+**3XX 重定向**
 
 -  **301 Moved Permanently** ：永久性重定向
-
 -  **302 Found** ：临时性重定向
-
 -  **303 See Other** ：和 302 有着相同的功能，但是 303 明确要求客户端应该采用 GET 方法获取资源。
-
 - 注：虽然 HTTP 协议规定 301、302 状态下重定向时不允许把 POST 方法改成 GET 方法，但是大多数浏览器都会在 301、302 和 303 状态下的重定向把 POST 方法改成 GET 方法。
-
 -  **304 Not Modified** ：如果请求报文首部包含一些条件，例如：If-Match，If-Modified-Since，If-None-Match，If-Range，If-Unmodified-Since，如果不满足条件，则服务器会返回 304 状态码。
-
 -  **307 Temporary Redirect** ：临时重定向，与 302 的含义类似，但是 307 要求浏览器不会把重定向请求的 POST 方法改成 GET 方法。
 
-## 4XX 客户端错误
+**4XX 客户端错误**
 
 -  **400 Bad Request** ：请求报文中存在语法错误。
-
 -  **401 Unauthorized** ：该状态码表示发送的请求需要有认证信息（BASIC 认证、DIGEST 认证）。如果之前已进行过一次请求，则表示用户认证失败。
-
 -  **403 Forbidden** ：请求被拒绝。
-
 -  **404 Not Found** 
 
-## 5XX 服务器错误
+**5XX 服务器错误**
 
 -  **500 Internal Server Error** ：服务器正在执行请求时发生错误。
-
 -  **503 Service Unavailable** ：服务器暂时处于超负载或正在进行停机维护，现在无法处理请求。
 
-# 四、HTTP 首部
+# 三、HTTP 首部
 
 有 4 种类型的首部字段：通用首部字段、请求首部字段、响应首部字段和实体首部字段。
 
@@ -233,72 +358,72 @@ CONNECT www.example.com:443 HTTP/1.1
 
 ## 通用首部字段
 
-| 首部字段名 | 说明 |
-| :--: | :--: |
-| Cache-Control | 控制缓存的行为 |
-| Connection | 控制不再转发给代理的首部字段、管理持久连接|
-| Date | 创建报文的日期时间 |
-| Pragma | 报文指令 |
-| Trailer | 报文末端的首部一览 |
-| Transfer-Encoding | 指定报文主体的传输编码方式 |
-| Upgrade | 升级为其他协议 |
-| Via | 代理服务器的相关信息 |
-| Warning | 错误通知 |
+|    首部字段名     |                    说明                    |
+| :---------------: | :----------------------------------------: |
+|   Cache-Control   |               控制缓存的行为               |
+|    Connection     | 控制不再转发给代理的首部字段、管理持久连接 |
+|       Date        |             创建报文的日期时间             |
+|      Pragma       |                  报文指令                  |
+|      Trailer      |             报文末端的首部一览             |
+| Transfer-Encoding |         指定报文主体的传输编码方式         |
+|      Upgrade      |               升级为其他协议               |
+|        Via        |            代理服务器的相关信息            |
+|      Warning      |                  错误通知                  |
 
 ## 请求首部字段
 
-| 首部字段名 | 说明 |
-| :--: | :--: |
-| Accept | 用户代理可处理的媒体类型 |
-| Accept-Charset | 优先的字符集 |
-| Accept-Encoding | 优先的内容编码 |
-| Accept-Language | 优先的语言（自然语言） |
-| Authorization | Web 认证信息 |
-| Expect | 期待服务器的特定行为 |
-| From | 用户的电子邮箱地址 |
-| Host | 请求资源所在服务器 |
-| If-Match | 比较实体标记（ETag） |
-| If-Modified-Since | 比较资源的更新时间 |
-| If-None-Match | 比较实体标记（与 If-Match 相反） |
-| If-Range | 资源未更新时发送实体 Byte 的范围请求 |
+|     首部字段名      |                      说明                       |
+| :-----------------: | :---------------------------------------------: |
+|       Accept        |            用户代理可处理的媒体类型             |
+|   Accept-Charset    |                  优先的字符集                   |
+|   Accept-Encoding   |                 优先的内容编码                  |
+|   Accept-Language   |             优先的语言（自然语言）              |
+|    Authorization    |                  Web 认证信息                   |
+|       Expect        |              期待服务器的特定行为               |
+|        From         |               用户的电子邮箱地址                |
+|        Host         |               请求资源所在服务器                |
+|      If-Match       |              比较实体标记（ETag）               |
+|  If-Modified-Since  |               比较资源的更新时间                |
+|    If-None-Match    |        比较实体标记（与 If-Match 相反）         |
+|      If-Range       |      资源未更新时发送实体 Byte 的范围请求       |
 | If-Unmodified-Since | 比较资源的更新时间（与 If-Modified-Since 相反） |
-| Max-Forwards | 最大传输逐跳数 |
-| Proxy-Authorization | 代理服务器要求客户端的认证信息 |
-| Range | 实体的字节范围请求 |
-| Referer | 对请求中 URI 的原始获取方 |
-| TE | 传输编码的优先级 |
-| User-Agent | HTTP 客户端程序的信息 |
+|    Max-Forwards     |                 最大传输逐跳数                  |
+| Proxy-Authorization |         代理服务器要求客户端的认证信息          |
+|        Range        |               实体的字节范围请求                |
+|       Referer       |            对请求中 URI 的原始获取方            |
+|         TE          |                传输编码的优先级                 |
+|     User-Agent      |              HTTP 客户端程序的信息              |
 
 ## 响应首部字段
 
-| 首部字段名 | 说明 |
-| :--: | :--: |
-| Accept-Ranges | 是否接受字节范围请求 |
-| Age | 推算资源创建经过时间 |
-| ETag | 资源的匹配信息 |
-| Location | 令客户端重定向至指定 URI |
+|     首部字段名     |             说明             |
+| :----------------: | :--------------------------: |
+|   Accept-Ranges    |     是否接受字节范围请求     |
+|        Age         |     推算资源创建经过时间     |
+|        ETag        |        资源的匹配信息        |
+|      Location      |   令客户端重定向至指定 URI   |
 | Proxy-Authenticate | 代理服务器对客户端的认证信息 |
-| Retry-After | 对再次发起请求的时机要求 |
-| Server | HTTP 服务器的安装信息 |
-| Vary | 代理服务器缓存的管理信息 |
-| WWW-Authenticate | 服务器对客户端的认证信息 |
+|    Retry-After     |   对再次发起请求的时机要求   |
+|       Server       |    HTTP 服务器的安装信息     |
+|        Vary        |   代理服务器缓存的管理信息   |
+|  WWW-Authenticate  |   服务器对客户端的认证信息   |
 
 ## 实体首部字段
 
-| 首部字段名 | 说明 |
-| :--: | :--: |
-| Allow | 资源可支持的 HTTP 方法 |
+|    首部字段名    |          说明          |
+| :--------------: | :--------------------: |
+|      Allow       | 资源可支持的 HTTP 方法 |
 | Content-Encoding | 实体主体适用的编码方式 |
-| Content-Language | 实体主体的自然语言 |
-| Content-Length | 实体主体的大小 |
-| Content-Location | 替代对应资源的 URI |
-| Content-MD5 | 实体主体的报文摘要 |
-| Content-Range | 实体主体的位置范围 |
-| Content-Type | 实体主体的媒体类型 |
-| Expires | 实体主体过期的日期时间 |
-| Last-Modified | 资源的最后修改日期时间 |
+| Content-Language |   实体主体的自然语言   |
+|  Content-Length  |     实体主体的大小     |
+| Content-Location |   替代对应资源的 URI   |
+|   Content-MD5    |   实体主体的报文摘要   |
+|  Content-Range   |   实体主体的位置范围   |
+|   Content-Type   |   实体主体的媒体类型   |
+|     Expires      | 实体主体过期的日期时间 |
+|  Last-Modified   | 资源的最后修改日期时间 |
 
-# 五、具体应用
+# 四、具体应用
 
 ## 连接管理
 
@@ -645,7 +770,7 @@ HTTP/1.1 使用虚拟主机技术，使得一台服务器拥有多个域名，�
 
 使用 SSL 等加密手段，在客户端和服务器之间建立一条安全的通信线路。
 
-# 六、HTTPS
+# 五、HTTPS
 
 HTTP 有以下安全性问题：
 
@@ -670,7 +795,7 @@ HTTPS 并不是新协议，而是让 HTTP 先和 SSL（Secure Sockets Layer）�
 
 <div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/7fffa4b8-b36d-471f-ad0c-a88ee763bb76.png" width="600"/> </div><br>
 
-### 2.非对称密钥加密
+### 2. 非对称密钥加密
 
 非对称密钥加密，又称公开密钥加密（Public-Key Encryption），加密和解密使用不同的密钥。
 
@@ -714,6 +839,20 @@ HTTPS 的报文摘要功能之所以安全，是因为它结合了加密和认�
 - 因为需要进行加密解密等过程，因此速度会更慢；
 - 需要支付证书授权的高额费用。
 
+
+# 六、HTTP/1.1 新特性
+
+详细内容请见上文
+
+- 默认是长连接
+- 支持流水线
+- 支持同时打开多个 TCP 连接
+- 支持虚拟主机
+- 新增状态码 100
+- 支持分块传输编码
+- 新增缓存处理指令 max-age
+
+
 # 七、HTTP/2.0
 
 ## HTTP/1.x 缺陷
@@ -754,99 +893,7 @@ HTTP/2.0 要求客户端和服务器同时维护和更新一个包含之前见�
 
 <div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/_u4E0B_u8F7D.png" width="600"/> </div><br>
 
-# 八、HTTP/1.1 新特性
 
-详细内容请见上文
-
-- 默认是长连接
-- 支持流水线
-- 支持同时打开多个 TCP 连接
-- 支持虚拟主机
-- 新增状态码 100
-- 支持分块传输编码
-- 新增缓存处理指令 max-age
-
-# 九、GET 和 POST 比较
-
-## 作用
-
-GET 用于获取资源，而 POST 用于传输实体主体。
-
-## 参数
-
-GET 和 POST 的请求都能使用额外的参数，但是 GET 的参数是以查询字符串出现在 URL 中，而 POST 的参数存储在实体主体中。不能因为 POST 参数存储在实体主体中就认为它的安全性更高，因为照样可以通过一些抓包工具（Fiddler）查看。
-
-因为 URL 只支持 ASCII 码，因此 GET 的参数中如果存在中文等字符就需要先进行编码。例如 `中文` 会转换为 `%E4%B8%AD%E6%96%87`，而空格会转换为 `%20`。POST 参数支持标准字符集。
-
-```
-GET /test/demo_form.asp?name1=value1&name2=value2 HTTP/1.1
-```
-
-```
-POST /test/demo_form.asp HTTP/1.1
-Host: w3schools.com
-name1=value1&name2=value2
-```
-
-## 安全
-
-安全的 HTTP 方法不会改变服务器状态，也就是说它只是可读的。
-
-GET 方法是安全的，而 POST 却不是，因为 POST 的目的是传送实体主体内容，这个内容可能是用户上传的表单数据，上传成功之后，服务器可能把这个数据存储到数据库中，因此状态也就发生了改变。
-
-安全的方法除了 GET 之外还有：HEAD、OPTIONS。
-
-不安全的方法除了 POST 之外还有 PUT、DELETE。
-
-## 幂等性
-
-幂等的 HTTP 方法，同样的请求被执行一次与连续执行多次的效果是一样的，服务器的状态也是一样的。换句话说就是，幂等方法不应该具有副作用（统计用途除外）。
-
-所有的安全方法也都是幂等的。
-
-在正确实现的条件下，GET，HEAD，PUT 和 DELETE 等方法都是幂等的，而 POST 方法不是。
-
-GET /pageX HTTP/1.1 是幂等的，连续调用多次，客户端接收到的结果都是一样的：
-
-```
-GET /pageX HTTP/1.1
-GET /pageX HTTP/1.1
-GET /pageX HTTP/1.1
-GET /pageX HTTP/1.1
-```
-
-POST /add_row HTTP/1.1 不是幂等的，如果调用多次，就会增加多行记录：
-
-```
-POST /add_row HTTP/1.1   -> Adds a 1nd row
-POST /add_row HTTP/1.1   -> Adds a 2nd row
-POST /add_row HTTP/1.1   -> Adds a 3rd row
-```
-
-DELETE /idX/delete HTTP/1.1 是幂等的，即使不同的请求接收到的状态码不一样：
-
-```
-DELETE /idX/delete HTTP/1.1   -> Returns 200 if idX exists
-DELETE /idX/delete HTTP/1.1   -> Returns 404 as it just got deleted
-DELETE /idX/delete HTTP/1.1   -> Returns 404
-```
-
-## 可缓存
-
-如果要对响应进行缓存，需要满足以下条件：
-
-- 请求报文的 HTTP 方法本身是可缓存的，包括 GET 和 HEAD，但是 PUT 和 DELETE 不可缓存，POST 在多数情况下不可缓存的。
-- 响应报文的状态码是可缓存的，包括：200, 203, 204, 206, 300, 301, 404, 405, 410, 414, and 501。
-- 响应报文的 Cache-Control 首部字段没有指定不进行缓存。
-
-## XMLHttpRequest
-
-为了阐述 POST 和 GET 的另一个区别，需要先了解 XMLHttpRequest：
-
-> XMLHttpRequest 是一个 API，它为客户端提供了在客户端和服务器之间传输数据的功能。它提供了一个通过 URL 来获取数据的简单方式，并且不会使整个页面刷新。这使得网页只更新一部分页面而不会打扰到用户。XMLHttpRequest 在 AJAX 中被大量使用。
-
-- 在使用 XMLHttpRequest 的 POST 方法时，浏览器会先发送 Header 再发送 Data。但并不是所有浏览器会这么做，例如火狐就不会。
-- 而 GET 方法 Header 和 Data 会一起发送。
 
 # 参考资料
 
@@ -878,13 +925,3 @@ DELETE /idX/delete HTTP/1.1   -> Returns 404
 - [Web 性能优化与 HTTP/2](https://www.kancloud.cn/digest/web-performance-http2)
 - [HTTP/2 简介](https://developers.google.com/web/fundamentals/performance/http2/?hl=zh-cn)
 
-
-
-
-# 微信公众号
-
-
-更多精彩内容将发布在微信公众号 CyC2018 上，你也可以在公众号后台和我交流学习和求职相关的问题。另外，公众号提供了该项目的 PDF 等离线阅读版本，后台回复 "下载" 即可领取。公众号也提供了一份技术面试复习大纲，不仅系统整理了面试知识点，而且标注了各个知识点的重要程度，从而帮你理清多而杂的面试知识点，后台回复 "大纲" 即可领取。我基本是按照这个大纲来进行复习的，对我拿到了 BAT 头条等 Offer 起到很大的帮助。你们完全可以和我一样根据大纲上列的知识点来进行复习，就不用看很多不重要的内容，也可以知道哪些内容很重要从而多安排一些复习时间。
-
-
-<br><div align="center"><img width="320px" src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/other/公众号海报6.png"></img></div>
