@@ -80,6 +80,17 @@ Java Servlet 是运行在 Web 服务器或应用服务器上的程序，它是�
 
 ## Servlet 的运行
 
+Servlet
+–GenericServlet
+–HttpServlet
+–自己的servlet
+
+ServletRequest
+–HttpServletRequest
+
+ServletResponse
+–HttpServletResponse
+
 ### Servlet 工作原理
 
 Servlet接口定义了Servlet与servlet容器之间的契约。这个契约是：Servlet容器将Servlet类载入内存，并产生Servlet实例和调用它具体的方法。但是要注意的是，在一个应用程序中，每种Servlet类型只能有一个实例。
@@ -159,7 +170,7 @@ Servlet容器处理客户端的请求并填充response对象。Servlet容器实�
 - Service方法:不管是get方式还是post方式的请求，如果Servlet类中有service方法，则优先调用Service方法。
 - doGet方法: 在没有service方法的情况下如果是get方式的请求所调用的处理请求的方法 
 - doPost方法: 在没有service方法的情况下如果是post方式的请求所调用的处理请求的方法
-- 注意：如果在覆写的service方法中调用了父类的service方法(super.service(arg0, arg1)),则service方法处理完后，会再次根据请求方式响应的doGet和doPost方法执行。所以，一般情况下我们是不在覆写的service中调用父类的service方法的，避免出现405错误。
+- 注意：如果在覆写的service方法中调用了父类的service方法(super.service(arg0, arg1)),则service方法处理完后，会再次根据请求方式响应的doGet和doPost方法执行。所以，一般情况下我们是不在覆写的service中调用父类的service方法的，避免出现405错误。doget/dopost与Http协议有关，是在 javax.servlet.http.HttpServlet 中实现的
 
 **Servlet的常见错误**：
 - 404错误:资源未找到
@@ -478,6 +489,11 @@ Cookie 和 Session都是用来跟踪浏览器用户身份的会话方式，但�
 Cookie 数据保存在客户端(浏览器端)，Session 数据保存在服务器端。
 
 Cookie 存储在客户端中，而Session存储在服务器上，相对来说 Session 安全性更高。如果使用 Cookie 的一些敏感信息不要写入 Cookie 中，最好能将 Cookie 信息加密然后使用到的时候再去服务器端解密。
+
+HttpServletResponse 接口提供了重写 URL 的方法：public java.lang.String encodeURL(java.lang.String url)  
+该方法的实现机制为：  
+- 先判断当前的 Web 组件是否启用 Session，如果没有启用 Session，直接返回参数 url。  
+- 再判断客户端浏览器是否支持 Cookie，如果支持 Cookie，直接返回参数 url；如果不支持 Cookie，就在参数 url 中加入 Session ID 信息，然后返回修改后的 url。  
 
 ## Servlet 三大作用域
 

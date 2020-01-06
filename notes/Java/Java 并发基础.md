@@ -330,6 +330,9 @@ public static void main(String[] args) {
 4. notify()方法将等待队列中的一个等待线程从等待队列中移到同步队列中，而notifyAll()方法则是将等待队列中所有的线程全部移到同步队列，被移动的线程状态由WAITING变为BLOCKED。
 5. 从wait()方法返回的前提是获得了调用对象的锁。
 
+-  wait() 方法要以 try/catch 包覆，或是掷出 InterruptedException 
+- 只能用在同步方法或者同步控制块中使用，否则会在运行时抛出 IllegalMonitorStateException。
+
 <div align="center"> 
 
 ![](../../assets/cs-note/java-concurrent/等待通知运行过程.png ':size=500')
@@ -338,6 +341,8 @@ public static void main(String[] args) {
 WaitThread首先获取了对象的锁，然后调用对象的wait()方法，从而放弃了锁并进入了对象的等待队列WaitQueue中，进入等待状态。由于WaitThread释放了对象的锁，NotifyThread随后获取了对象的锁，并调用对象的notify()方法，将WaitThread从WaitQueue移到SynchronizedQueue中，此时WaitThread的状态变为阻塞状态。NotifyThread释放了锁之后，WaitThread再次获取到锁并从wait()方法返回继续执行
 
 使用 wait() 挂起期间，线程会释放锁。这是因为，如果没有释放锁，那么其它线程就无法进入对象的同步方法或者同步控制块中，那么就无法执行 notify() 或者 notifyAll() 来唤醒挂起的线程，造成死锁。
+
+
 
 **等待/通知**的经典范式分为两部分，分别针对等待方(消费者)和通知方(生产者)
 
@@ -358,6 +363,7 @@ WaitThread首先获取了对象的锁，然后调用对象的wait()方法，从�
 - 两者最主要的区别在于：**sleep 方法没有释放锁，而 wait 方法释放了锁** 。
 - Wait 通常被用于线程间交互/通信，sleep 通常被用于暂停执行。
 - wait() 方法被调用后，线程不会自动苏醒，需要别的线程调用同一个对象上的 notify() 或者 notifyAll() 方法。或者可以使用wait(long timeout)超时后线程会自动苏醒。sleep() 方法执行完成后，线程会自动苏醒。
+- wait()方法可以抛出异常也可以捕获异常，sleep方法必须通过try~catch块捕获异常
 
 ### 显式Condition对象(await/signal)
 
@@ -376,6 +382,8 @@ synchronized关键字与wait()和notify()/notifyAll()方法相结合可以实现
 
 线程Thread除了提供join()方法之外，还提供了join(long millis)和join(longmillis,int nanos)两个具备超时特性的方法。这两个超时方法表示，如果线程thread在给定的超时时间里没有终止，那么将会从该超时方法中返回
 
+join()底层就是调用wait()方法的，wait()释放锁资源，故join也释放锁资源
+
 ### ThreadLocal
 
 ThreadLocal，即线程变量，是一个以ThreadLocal对象为键、任意对象为值的存储结构。这个结构被附带在线程上，也就是说一个线程可以根据一个ThreadLocal对象查询到绑定在这个线程上的一个值。
@@ -387,6 +395,8 @@ ThreadLocal，即线程变量，是一个以ThreadLocal对象为键、任意对�
 最终的变量是放在了当前线程的 ThreadLocalMap 中，并不是存在 ThreadLocal 上，ThreadLocal 可以理解为只是ThreadLocalMap的封装，传递了变量值。 ThrealLocal 类中可以通过Thread.currentThread()获取到当前线程对象后，直接通过getMap(Thread t)可以访问到该线程的ThreadLocalMap对象。
 
 ThreadLocalMap是ThreadLocal的静态内部类。
+
+ThreadLocalMap中使用开放地址法来处理散列冲突，而HashMap中使用的是分离链表法。
 
 <div align="center"> 
 
@@ -449,9 +459,9 @@ Java对象头里的Mark Word里默认存储对象的HashCode，分代年龄和�
 
  
 
-| 25 bit   | 4bit           | 1bit：是否是偏向锁 | 2bit：锁标志位 |
-| -------- | -------------- | ------------------ | -------------- |
-| 无锁状态 | 对象的hashCode | 对象分代年龄       | 0              | 01 |
+| 25 bit         | 4bit         | 1bit：是否是偏向锁 | 2bit：锁标志位 |
+| -------------- | ------------ | ------------------ | -------------- |
+| 对象的hashCode | 对象分代年龄 | 0                  | 01             |
 
 在运行期间Mark Word里存储的数据会随着锁标志位的变化而变化。Mark Word可能变化为存储以下4种数据：
 
@@ -487,11 +497,6 @@ Java对象头里的Mark Word里默认存储对象的HashCode，分代年龄和�
 		<td>10</td>
     </tr>
     <tr>
-        <td>GC标记</td>
-		<td colspan="4">空</td>
-		<td>11</td>
-    </tr>
-    <tr>
         <td>偏向锁</td>
         <td>线程ID</td>
 		<td>Epoch</td>
@@ -499,12 +504,17 @@ Java对象头里的Mark Word里默认存储对象的HashCode，分代年龄和�
 		<td>1</td>
 		<td>01</td>
     </tr>
+    <tr>
+        <td>GC标记</td>
+		<td colspan="4">空</td>
+		<td>11</td>
+    </tr>
 </table>
 
 
 ### 2. 锁的升级
 
-Java SE 1.6为了减少获得锁和释放锁带来的性能消耗，引入了“偏向锁”和“轻量级锁”，在 Java SE 1.6中，锁一共有4种状态，级别从低到高依次是：无锁状态、偏向锁状态、轻量级锁状 态和重量级锁状态，这几个状态会随着竞争情况逐渐升级。锁可以升级但不能降级，意味着偏 向锁升级成轻量级锁后不能降级成偏向锁。这种锁升级却不能降级的策略，目的是为了提高 获得锁和释放锁的效率。
+Java SE 1.6为了减少获得锁和释放锁带来的性能消耗，引入了“偏向锁”和“轻量级锁”，在 Java SE 1.6中，锁一共有4种状态，级别从低到高依次是：无锁状态、偏向锁状态、轻量级锁状态和重量级锁状态，这几个状态会随着竞争情况逐渐升级。锁可以升级但不能降级，意味着偏向锁升级成轻量级锁后不能降级成偏向锁。这种锁升级却不能降级的策略，目的是为了提高获得锁和释放锁的效率。
 
 ### 3. 偏向锁
 
@@ -592,7 +602,7 @@ Java SE 1.6为了减少获得锁和释放锁带来的性能消耗，引入了“
 
 ### Java语言中的线程安全
 
-ava语言中各种操作共享的数据分为以下5类：不可变、绝对线程安全、相对线程安全、线程兼容和线程对立
+Java语言中各种操作共享的数据分为以下5类：不可变、绝对线程安全、相对线程安全、线程兼容和线程对立
 
 1. 不可变
    - 不可变(Immutable)的对象一定是线程安全的，无论是对象的方法实现还是方法的调用者，都不需要再采取任何的线程安全保障措施，只要一个不可变的对象被正确地构建出来(没有发生this引用逃逸的情况)，那其外部的可见状态永远也不会改变，永远也不会看到它在多个线程之中处于不一致的状态。“不可变”带来的安全性是最简单和最纯粹的。
@@ -662,7 +672,7 @@ public static void main(String[] args) {
 100
 ```
 
-1. 线程本地存储(Thread Local Storage)
+2. 线程本地存储(Thread Local Storage)
 
 如果一段代码中所需要的数据必须与其他代码共享，那就看看这些共享数据的代码是否能保证在同一个线程中执行。如果能保证，我们就可以把共享数据的可见范围限制在同一个线程之内，这样，无须同步也能保证线程之间不出现数据争用的问题。
 
@@ -768,12 +778,31 @@ ThreadLocal 从理论上讲并不是用来解决多线程并发问题的，因�
 
 在一些场景 (尤其是使用线程池) 下，由于 ThreadLocal.ThreadLocalMap 的底层数据结构导致 ThreadLocal 有内存泄漏的情况，应该尽可能在每次使用 ThreadLocal 后手动调用 remove()，以避免出现 ThreadLocal 经典的内存泄漏甚至是造成自身业务混乱的风险。
 
-1. 可重入代码(Reentrant Code)
+3. 可重入代码(Reentrant Code)
 
 这种代码也叫做纯代码(Pure Code)，可以在代码执行的任何时刻中断它，转而去执行另外一段代码(包括递归调用它本身)，而在控制权返回后，原来的程序不会出现任何错误。
 
 可重入代码有一些共同的特征，例如不依赖存储在堆上的数据和公用的系统资源、用到的状态量都由参数中传入、不调用非可重入的方法等。
 ## 锁优化
+
+1. 自旋锁
+2. 自旋锁的其他种类
+3. 阻塞锁
+4. 可重入锁
+5. 读写锁
+6. 互斥锁
+7. 悲观锁
+8. 乐观锁
+9. 公平锁
+10. 非公平锁
+11. 偏向锁
+12. 对象锁
+13. 线程锁
+14. 锁粗化
+15. 轻量级锁
+16. 锁消除
+17. 锁膨胀
+18. 信号量
 
 高效并发是从JDK 1.5到JDK 1.6的一个重要改进，锁优化主要是指 JVM 对 synchronized 的优化
 
@@ -1176,6 +1205,7 @@ volatile变量自身具有下列特性：
 为了实现volatile内存语义，JMM会分别限制这编译器重排序和处理器重排序。
 
 volatile重排序规则表如下：
+
 | 第一个操作/第二个操作 | 普通读/写 | volatile读 | volatile写 |
 | --------------------- | --------- | ---------- | ---------- |
 | 普通读/写             |           |            | No         |
@@ -1284,10 +1314,11 @@ AQS，非阻塞数据结构和原子变量类(java.util.concurrent.atomic包中�
 不要将获取锁的过程写在try块中，因为如果在获取锁(自定义锁的实现)时发生了异常，异常抛出的同时，也会导致锁无故释放。
 
 Lock接口提供的synchronized关键字不具备的主要特性:
+
 | 特性               | 描述                                                                                     |
 | ------------------ | ---------------------------------------------------------------------------------------- |
 | 尝试非阻塞地获取锁 | 当前线程尝试获取锁，如果这一时刻锁没有被其他线程获取到，则成功获取并持有锁               |
-| 能被中断地获取锁   | 获取到锁的线程能够相应中断，当获取到锁的线程被中断时，中断异常将会被抛出，同时锁会被释放 |
+| 能被中断地获取锁   | 获取到锁的线程能够响应中断，当获取到锁的线程被中断时，中断异常将会被抛出，同时锁会被释放 |
 | 超时获取锁         | 在指定的截止时间之前获取锁，如果截止时间到了仍旧无法获取锁，则返回                       |
 
 
@@ -1441,7 +1472,7 @@ Lock接口提供的synchronized关键字不具备的主要特性:
   - ReentrantLock 是 JDK 层面实现的(也就是 API 层面，需要 lock() 和 unlock() 方法配合 try/finally 语句块来完成)。
 - 性能：新版本 Java 对 synchronized 进行了很多优化，例如自旋锁、锁消除、锁粗化、偏向锁、轻量级锁，synchronized 与 ReentrantLock 大致相同。
 - ReentrantLock 的高级功能：
-  - 等待可终端：当持有锁的线程长期不释放锁的时候，正在等待的线程可以选择放弃等待，改为处理其他事情。
+  - 等待可中断：当持有锁的线程长期不释放锁的时候，正在等待的线程可以选择放弃等待，改为处理其他事情。
     - ReentrantLock提供了一种能够中断等待锁的线程的机制，通过`lock.lockInterruptibly()`来实现这个机制。
   - 可实现公平锁：公平锁是指多个线程在等待同一个锁时，必须按照申请锁的时间顺序来依次获得锁
     - 可以通过 ReentrantLock类的 `ReentrantLock(boolean fair)` 构造方法来制定是否是公平的
@@ -1483,6 +1514,7 @@ LockSupport定义了一组以park开头的方法用来阻塞当前线程，以�
 任意一个Java对象，都拥有一组监视器方法(定义在java.lang.Object上)，主要包括wait()、wait(long timeout)、notify()以及notifyAll()方法，这些方法与synchronized同步关键字配合，可以实现等待/通知模式。Condition接口也提供了类似Object的监视器方法，与Lock配合可以实现等待/通知模式，但是这两者在使用方式以及功能特性上还是有差别的。
 
 Object的监视器方法与Condition接口的对比
+
 | 对比项                                         | Object Monitor Methods |         Condition         |
 | ---------------------------------------------- | :--------------------: | :-----------------------: |
 | 前置条件                                       |      获取对象的锁      |    获取Lock和Condition    |
@@ -1552,6 +1584,7 @@ public CyclicBarrier(int parties, Runnable barrierAction) {
 - CyclicBarrier还提供其他有用的方法，比如:
   - getNumberWaiting方法可以获得Cyclic-Barrier阻塞的线程数量
   - isBroken()方法用来了解阻塞的线程是否被中断
+- CountDownLatch 是等待一组线程执行完，才执行后面的代码。此时这组线程已经执行完。CyclicBarrier 是等待一组线程至某个状态后再同时全部继续执行线程。此时这组线程还未执行完。
 
 ## Semaphore
 

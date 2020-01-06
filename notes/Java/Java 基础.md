@@ -8,14 +8,17 @@
   * [不可变的好处](#不可变的好处)
   * [String, StringBuffer and StringBuilder](#String-StringBuffer-and-StringBuilder)
   * [String Pool](#String-Pool)
-  * [new String("abc")](#new-Stringabc)
+  * [new String(&quot;abc&quot;)](#new-Stringquotabcquot)
 * [三、运算](#三运算)
   * [参数传递](#参数传递)
   * [float 与 double](#float-与-double)
   * [隐式类型转换](#隐式类型转换)
   * [switch](#switch)
+  * [三元运算](#三元运算)
 * [四、继承](#四继承)
   * [访问权限](#访问权限)
+  * [内部类](#内部类)
+    * [内部类的分类](#内部类的分类)
   * [抽象类与接口](#抽象类与接口)
   * [super](#super)
   * [重写与重载](#重写与重载)
@@ -54,6 +57,16 @@
 - boolean/\~
 
 boolean 只有两个值：true、false，可以使用 1 bit 来存储，但是具体大小没有明确规定。JVM 会在编译时期将 boolean 类型的数据转换为 int，使用 1 来表示 true，0 表示 false。JVM 支持 boolean 数组，但是是通过读写 byte 数组来实现的。
+
+byte = char = short < int < long < float < double
+
+两个数值进行二元操作时，会有如下的转换操作：
+- 如果两个操作数其中有一个是double类型，另一个操作就会转换为double类型。
+- 否则，如果其中一个操作数是float类型，另一个将会转换为float类型。
+- 否则，如果其中一个操作数是long类型，另一个会转换为long类型。
+- 否则，两个操作数都转换为int类型。
+
+Java允许对boolean类型的值进行按位“与”、“或”和“异或”操作，但不能进行按位“非”。对于boolean值，按位操作与逻辑操作有相同的结果，但是不会发生“短路”。
 
 - [Primitive Data Types](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html)
 - [The Java® Virtual Machine Specification](https://docs.oracle.com/javase/specs/jvms/se8/jvms8.pdf)
@@ -444,11 +457,28 @@ switch 不支持 long，是因为 switch 的设计初衷是对那些只有少数
 
 [StackOverflow : Why can't your switch statement data type be long, Java?](https://stackoverflow.com/questions/2676210/why-cant-your-switch-statement-data-type-be-long-java)
 
+## 三元运算
+
+三元操作符类型的转换规则：
+1. 若两个操作数不可转换，则不做转换，返回值为Object类型
+2. 若两个操作数是明确类型的表达式（比如变量），则按照正常的二进制数字来转换，int类型转换为long类型，long类型转换为float类型等。
+3. 若两个操作数中有一个是数字S,另外一个是表达式，且其类型标示为T，那么，若数字S在T的范围内，则转换为T类型；若S超出了T类型的范围，则T转换为S类型。
+4. 若两个操作数都是直接量数字，则返回值类型为范围较大者
+
 # 四、继承
 
 ## 访问权限
 
 Java 中有三个访问权限修饰符：private、protected 以及 public，如果不加访问修饰符，表示包级可见。
+
+public>protected>默认(包访问权限)>private
+
+|          | private | defalt | protect | public |
+| -------- | ------- | ------ | ------- | ------ |
+| 同一个类 | Y       | Y      | Y       | Y      |
+| 同一个包 |         | Y      | Y       | Y      |
+| 子类     |         |        | Y       | Y      |
+| 全局     |         |        |         | Y      |
 
 可以对类或类中的成员(字段以及方法)加上访问修饰符。
 
@@ -458,6 +488,8 @@ Java 中有三个访问权限修饰符：private、protected 以及 public，如
 protected 用于修饰成员，表示在继承体系中成员对于子类可见，但是这个访问修饰符对于类没有意义。
 
 设计良好的模块会隐藏所有的实现细节，把它的 API 与它的实现清晰地隔离开来。模块之间只通过它们的 API 进行通信，一个模块不需要知道其他模块的内部工作情况，这个概念被称为信息隐藏或封装。因此访问权限应当尽可能地使每个类或者成员不被外界访问。
+
+子类能继承父类的所有域，只是private修饰的无法访问
 
 如果子类的方法重写了父类的方法，那么子类中该方法的访问级别不允许低于父类的访问级别。这是为了确保可以使用父类实例的地方都可以使用子类实例，也就是确保满足里氏替换原则。
 
@@ -506,6 +538,65 @@ public class AccessWithInnerClassExample {
     }
 }
 ```
+
+## 内部类
+
+
+把类定义在另一个类的内部，该类就被称为内部类。
+
+内部类是可以用private修饰的！不让类以外的其他类访问！
+
+内部类的访问规则
+- 可以直接访问外部类的成员，包括私有
+- 外部类要想访问内部类成员，必须创建对象
+
+### 内部类的分类
+
+- 成员内部类
+- 局部内部类
+- 匿名内部类
+
+#### 成员内部类
+
+成员内部类
+- 访问规则：外部类名.内部类名 对象名 = new 外部类名().new 内部类名();
+- 可以访问外部所有资源，但本身内部不可有静态属性(自己需要依靠外部类的实例化)
+- 访问外部类同名成员时：外部类.this.成员变量/成员方法
+
+静态内部类
+- 访问规则：外部类名.内部类名 对象名 = new 外部类名.内部类名();
+- 不可访问外部非静态资源
+
+
+
+#### 局部内部类
+
+像方法里的局部变量一样
+
+- 无法被访问修饰符和static修饰
+- 只能访问外部的final变量和形参
+- 因为局部变量使用完毕就消失，而堆内存的数据并不会立即消失。所以，堆内存还是用该变量，而该变量已经没有了。为了让该值还存在，就加final修饰。
+- 通过反编译工具我们看到了，加入final后，堆内存直接存储的是值，而不是变量名。
+
+- 在JDK8版本之中,方法内部类中调用方法中的局部变量,可以不需要修饰为 final,匿名内部类也是一样的，主要是JDK8之后增加了 Effectively final 功能
+
+局部内部类：外部类的一般方法中
+
+局部静态内部类：外部类的静态方法中
+
+#### 匿名内部类
+
+局部内部类的简化形式
+
+- 没有构造器，没有静态资源，无法被访问修饰符和static修饰
+- 对于匿名内部类的使用它是存在一个缺陷的，就是它仅能被使用一次，创建匿名内部类时它会立即创建一个该类的实例，该类的定义会立即消失，所以匿名内部类是不能够被重复使用;
+- 使用匿名内部类时，我们必须是继承一个类或者实现一个接口，但是两者不可兼得，同时也只能继承一个类或者实现一个接口;
+- 匿名内部类中是不能定义构造函数的
+- 匿名内部类中不能存在任何的静态成员变量和静态方法,匿名内部类不能是抽象的,它必须要实现继承的类或者实现的接口的所有抽象方法
+- 匿名内部类初始化:使用构造代码块！利用构造代码块能够达到为匿名内部类创建一个构造器的效果
+
+本质：其实是继承该类或者实现接口的子类匿名对象
+
 
 ## 抽象类与接口
 
@@ -594,6 +685,7 @@ System.out.println(InterfaceExample.x);
 - 从使用上来看，一个类可以实现多个接口，但是不能继承多个抽象类。
 - 接口的字段只能是 static 和 final 类型的，而抽象类的字段没有这种限制。
 - 接口的成员只能是 public 的，而抽象类的成员可以有多种访问权限。
+- 接口不能有构造方法，抽象类可以有
 
 **4. 使用选择** 
 
@@ -615,10 +707,15 @@ System.out.println(InterfaceExample.x);
 - [When to Use Abstract Class and Interface](https://dzone.com/articles/when-to-use-abstract-class-and-intreface)
 
 
+
+
 ## super
 
 - 访问父类的构造函数：可以使用 super() 函数访问父类的构造函数，从而委托父类完成一些初始化的工作。应该注意到，子类一定会调用父类的构造函数来完成初始化工作，一般是调用父类的默认构造函数，如果子类需要调用父类其它构造函数，那么就可以使用 super 函数。
 - 访问父类的成员：如果子类重写了父类的某个方法，可以通过使用 super 关键字来引用父类的方法实现。
+
+- this()和super()不可以同时出现在一个构造函数中，这是因为会造成初始化两次
+- super()和this()一定要放在构造方法内第一行
 
 ```java
 public class SuperExample {
@@ -667,11 +764,21 @@ SuperExtendExample.func()
 
 [Using the Keyword super](https://docs.oracle.com/javase/tutorial/java/IandI/super.html)
 
+
+
 ## 重写与重载
 
 **1. 重写(Override)** 
 
 存在于继承体系中，指子类实现了一个与父类在方法声明上完全相同的一个方法。
+
+- 参数列表必须完全与被重写方法的相同
+- 声明为final的方法不能被重写。、
+- 声明为static的方法不能被重写，但是能够被再次声明。
+- 子类和父类在同一个包中，那么子类可以重写父类所有方法，除了声明为private和final的方法。
+- 子类和父类不在同一个包中，那么子类只能够重写父类的声明为public和protected的非final方法。
+- 构造方法不能被重写。
+- 如果不能继承一个方法，则不能重写这个方法。
 
 为了满足里式替换原则，重写有以下三个限制：
 
@@ -778,6 +885,14 @@ public static void main(String[] args) {
 存在于同一个类中，指一个方法与已经存在的方法名称上相同，但是参数类型、个数、顺序至少有一个不同。
 
 应该注意的是，返回值不同，其它都相同不算是重载。
+
+
+- 被重载的方法必须改变参数列表(参数个数或类型或顺序不一样)；
+- 被重载的方法可以改变返回类型；
+- 被重载的方法可以改变访问修饰符；
+- 被重载的方法可以声明新的或更广的检查异常；
+- 方法能够在同一个类中或者在一个子类中被重载。
+- 无法以返回值类型作为重载函数的区分标准。
 
 # 五、Object 通用方法
 
@@ -951,6 +1066,8 @@ ToStringExample@4554617c
 ```
 
 ## clone()
+
+clone 和 readObject 对象的初始化并不是通过构造函数完成的，而是读取别的内存区域中的对象的各个域来完成。
 
 **1. cloneable** 
 
@@ -1144,6 +1261,28 @@ System.out.println(e2.get(2)); // 2
 
 # 六、关键字
 
+true、false、null都不是关键字
+
+goto、const、是保留的关键字
+
+|              |            |          |            |
+| ------------ | ---------- | -------- | ---------- |
+| abstract     | continue   | for      | new        |
+| switch       | default    | if       | package    |
+| synchronized | do         | goto     | private    |
+| this         | break      | double   | implements |
+| protected    | throw      | byte     | else       |
+| import       | public     | throws   | case       |
+| enum         | instanceof | return   | transient  |
+| catch        | extends    | int      | short      |
+| try          | char       | final    | interface  |
+| static       | void       | class    | finally    |
+| long         | strictfp   | volatile | const      |
+| float        | native     | super    | while      |
+| boolean      | assert     |
+
+
+
 ## final
 
 **1. 数据** 
@@ -1152,6 +1291,16 @@ System.out.println(e2.get(2)); // 2
 
 - 对于基本类型，final 使数值不变；
 - 对于引用类型，final 使引用不变，也就不能引用其它对象，但是被引用的对象本身是可以修改的。
+
+final变量的初始化(可以是编译时常量，也可以是在运行时被初始化后不能被改变的常量)
+- final所修饰的成员变量只能赋值一次
+  - 在声明的时候直接赋值
+  - 静态初始化块中赋值
+  - 构造块中赋值，构造器中赋值
+  - 在类方法中赋值
+- final修饰的局部变量
+  - 在声明的时候初始化
+  - 在第一次使用的通过方法或者表达式给它赋值。
 
 ```java
 final int x = 1;
@@ -1176,6 +1325,8 @@ private 方法隐式地被指定为 final，如果在子类中定义的方法和
 
 - 静态变量：又称为类变量，也就是说这个变量属于类的，类所有的实例都共享静态变量，可以直接通过类名来访问它。静态变量在内存中只存在一份。
 - 实例变量：每创建一个实例就会产生一个实例变量，它与该实例同生共死。
+
+Java在序列化时不会实例化static变量和transient修饰的变量，因为static代表类的成员，transient代表对象的临时数据，被声明这两种类型的数据成员不能被序列化
 
 ```java
 public class A {
@@ -1358,10 +1509,35 @@ Throwable 可以用来表示任何可以作为异常抛出的类，分为两种�
 
 <div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/PPjwP.png" width="600"/> </div><br>
 
+Throwable类常用方法
+- public string getMessage():返回异常发生时的简要描述
+- public string toString():返回异常发生时的详细信息
+- public string getLocalizedMessage():返回异常对象的本地化信息。使用Throwable的子类覆盖这个方法，可以生成本地化信息。如果子类没有覆盖该方法，则该方法返回的信息与getMessage（）返回的结果相同
+- public void printStackTrace():在控制台上打印Throwable对象封装的异常信息
+
+异常处理
+- try 块： 用于捕获异常。其后可接零个或多个catch块，如果没有catch块，则必须跟一个finally块。
+- catch 块： 用于处理try捕获到的异常。
+  - 一个 try 块可能有多个 catch 块。若如此，则执行第一个匹配块。即Java虚拟机会把实际抛出的异常对象依次和各个catch代码块声明的异常类型匹配，如果异常对象为某个异常类型或其子类的实例，就执行这个catch代码块，不会再执行其他的 catch代码块
+- finally 块： 无论是否捕获或处理异常，finally块里的语句都会被执行。当在try块或catch块中遇到return 语句时，finally语句块将在方法返回之前(已暂存返回值)被执行。
+
+在以下4种特殊情况下，finally块不会被执行：
+
+- 在finally语句块第一行发生了异常。 因为在其他行，finally块还是会得到执行
+- 在前面的代码中用了System.exit(int)已退出程序。 exit是带参函数 ；若该语句在异常语句之后，finally会执行
+- 程序所在的线程死亡。
+- 关闭CPU。
+
 - [Java 入门之异常处理](https://www.tianmaying.com/tutorial/Java-Exception)
 - [Java 异常的面试问题及答案 -Part 1](http://www.importnew.com/7383.html)
 
 # 九、泛型
+
+泛型只是在 编译期 保证对象类型相同的技术。真正在代码的运行期，jvm会擦出泛型的存在。
+
+所以我们可以利用反射技术为一个已指定泛型的集合添加一个不符合泛型要求的元素，因为反射的生效期在运行期，泛型无法进行拦截。
+
+因此，泛型指定的元素不具有继承的特性。不能将泛型中的派生类类型复制给基类类型。从而出现了通配符的技术，为了解决在泛型中不能像正常JAVA类中的继承关系。个人的理解是通配符的继承就是为了弥补泛型在继承关系上面的缺陷而诞生的。因此集合可以使用通配符来描述继承关系，但不能直接使用指定泛型来描述。通配符的方式可以正确的描述带泛型集合的继承关系。
 
 ```java
 public class Box<T> {

@@ -76,6 +76,13 @@ public class Thread {
 - 大多数可阻塞库函数只抛出InterruptedException作为中断响应，也是最合理的取消策略：尽快退出执行流程并把中断信息传递给调用者，从而使栈中的上层代码可以采取进一步的操作。
 - 由于每个线程拥有各自的中断策略，除非知道中断对该线程的含义，否则就不应该中断这个线程。
 
+当线程在活动之前或活动期间处于正在等待、休眠或占用状态且该线程被中断时，抛出该异常InterruptedException
+
+抛 InterruptedException 的代表方法有：
+- java.lang.Object 类的 wait 方法
+- java.lang.Thread 类的 sleep 方法
+- java.lang.Thread 类的 join 方法
+
 **响应中断**
 
 当调用可中断的阻塞函数，例如Thread.sleep等，有两种实用策略可用于处理InterruptedException：
@@ -299,7 +306,7 @@ ConcurrentLinkedQueue 适合在对性能要求相对较高，同时对队列的�
 
 ## 线程池
 
-> 池化技术相比大家已经屡见不鲜了，线程池、数据库连接池、Http 连接池等等都是对这个思想的应用。池化技术的思想主要是为了减少每次获取资源的消耗，提高对资源的利用率。
+> 池化技术想必大家已经屡见不鲜了，线程池、数据库连接池、Http 连接池等等都是对这个思想的应用。池化技术的思想主要是为了减少每次获取资源的消耗，提高对资源的利用率。
 
 Java中的线程池是运用场景最多的并发框架，几乎所有需要异步或并发执行任务的程序都可以使用线程池。
 
@@ -588,7 +595,7 @@ FixedThreadPool 使用无界队列 LinkedBlockingQueue(队列的容量为 Intger
 2. 当前线程池中有一个运行的线程后，将任务加入 LinkedBlockingQueue
 3. 线程执行完当前的任务后，会在循环中反复从LinkedBlockingQueue 中获取任务来执行；
 
-**不推荐使用FixedThreadPool**
+**不推荐使用 SingleThreadExecutor**
 
 SingleThreadExecutor 使用无界队列 LinkedBlockingQueue 作为线程池的工作队列(队列的容量为 Intger.MAX_VALUE)。SingleThreadExecutor 使用无界队列作为线程池的工作队列会对线程池带来的影响与 FixedThreadPool 相同。说简单点就是可能会导致 OOM，
 

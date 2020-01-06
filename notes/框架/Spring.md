@@ -3,6 +3,7 @@
   * [Spring模块](#Spring模块)
 * [Spring IoC](#Spring-IoC)
   * [Spring IOC 工作过程](#Spring-IOC-工作过程)
+  * [Spring依赖注入](#Spring依赖注入)
   * [Spring Bean](#Spring-Bean)
     * [bean 作用域](#bean-作用域)
     * [bean 生命周期](#bean-生命周期)
@@ -66,12 +67,14 @@ Spring 官网列出的 Spring 的 6 个特征:
 
 ![Spring主要模块](../../assets/cs-note/framework/spring/Spring主要模块.png)
 
-- **Spring Core：** 基础,可以说 Spring 其他所有的功能都需要依赖于该类库。主要提供 IoC 依赖注入功能。
-- **Spring  Aspects** ： 该模块为与AspectJ的集成提供支持。
+- **Spring Core**： 基础,可以说 Spring 其他所有的功能都需要依赖于该类库。主要提供 IoC 依赖注入功能。
+- **Spring Context**: 构建于Core封装包基础上的 Context封装包，提供了一种框架式的对象访问方法，有些象JNDI注册器。Context封装包的特性得自于Beans封装包，并添加了对国际化（I18N）的支持（例如资源绑定），事件传播，资源装载的方式和Context的透明创建，比如说通过Servlet容器。
+- **Spring Aspects** ： 该模块为与AspectJ的集成提供支持。
 - **Spring AOP** ：提供了面向切面的编程实现。
 - **Spring JDBC** : Java数据库连接。
 - **Spring JMS** ：Java消息服务。
 - **Spring ORM** : 用于支持Hibernate等ORM工具。
+- **Spring DAO**:  DAO (Data Access Object)提供了JDBC的抽象层，它可消除冗长的JDBC编码和解析数据库厂商特有的错误代码。 并且，JDBC封装包还提供了一种比编程性更好的声明性事务管理方法，不仅仅是实现了特定接口，而且对所有的POJOs（plain old Java objects）都适用。
 - **Spring Web** : 为创建Web应用程序提供支持。
 - **Spring Test** : 提供了对 JUnit 和 TestNG 测试的支持。
 
@@ -108,6 +111,29 @@ Spring 时代我们一般通过 XML 文件来配置 Bean，后来开发人员觉
 2. 注入bean的属性
 
 [IoC源码阅读](https://javadoop.com/post/spring-ioc)
+
+## Spring依赖注入
+
+- setter方式注入（设值注入）
+- 构造器方式注入
+  - Spring支持利用构造器注入参数实例化Bean方式。只要在Spring的配置文件中增加构造器参数constructor-arg
+  - Spring就会自动的调用有参数的构造器创建bean对象实例, 整个过程无需程序编码只需要配置applicationContext.xml文件即可
+- 自动装配功能实现属性自动注入
+  - Spring IoC容器可以自动装配（autowire）相互协作bean之间的关联关系，autowire可以针对单个bean进行设置，autowire的方便之处在于减少xml的注入配置。
+
+当设值注入与构造注入同时存在时，先执行构造注入，再执行设值注入。
+
+设置注入
+- 与传统的JavaBean的写法更相似，程序开发人员更容易理解、接受。通过setter方法设定依赖关系显得更加直观、自然。
+- 对于复杂的依赖关系，如果采用构造注入，会导致构造器过于臃肿，难以阅读。Spring在创建Bean实例时，需要同时实例化其依赖的全部实例，因而导致性能下降。而是用设置注入可以避免这些问题。
+- 尤其在某些属性可选的情况下，多参数的构造器更加笨重。
+
+构造器注入
+- 构造注入可以再构造器中决定依赖关系的注入顺序，有限依赖的优先注入。例如，组件中其它依赖关系的注入，常常需要依赖于Datasource的注入。采用构造注入，可以在代码中清晰地决定注入顺序。
+- 对于依赖关系无需变化的Bean，构造注入更加有用。因为没有setter方法，所有的依赖关系全部在构造器内设定。因此，无需担心后续代码对依赖关系的破坏。
+- 依赖关系只能在构造器中设定，则只有组建的创建者才能改变组建的依赖关系。队组建的调用者而言，组件内部的依赖关系完全透明，更符合高内聚的原则。
+
+
 
 ## Spring Bean
 
@@ -183,7 +209,7 @@ global session 作用域类似于标准的 HTTP session 作用域，不过仅仅
 - 如果涉及到一些属性值 利用 `set()`方法设置一些属性值。
 - 如果 Bean 实现了 `BeanNameAware` 接口，调用 `setBeanName()`方法，传入Bean的名字。
 - 如果 Bean 实现了 `BeanClassLoaderAware` 接口，调用 `setBeanClassLoader()`方法，传入 `ClassLoader`对象的实例。
-- 如果Bean实现了 `BeanFactoryAware` 接口，调用 `setBeanClassLoader()`方法，传入 `ClassLoade` r对象的实例。
+- 如果Bean实现了 `BeanFactoryAware` 接口，调用 `setBeanClassLoader()`方法，传入 `ClassLoader` 对象的实例。
 - 与上面的类似，如果实现了其他 `*.Aware`接口，就调用相应的方法。
 - 如果有和加载这个 Bean 的 Spring 容器相关的 `BeanPostProcessor` 对象，执行`postProcessBeforeInitialization()` 方法
 - 如果Bean实现了`InitializingBean`接口，执行`afterPropertiesSet()`方法。
@@ -194,7 +220,7 @@ global session 作用域类似于标准的 HTTP session 作用域，不过仅仅
 
 图示：
 
-![Spring Bean 生命周期](.././../pictures/framework/spring/Spring-bean-lifecycle.png)
+![Spring Bean 生命周期](../../assets/cs-note/framework/spring/Spring-bean-lifecycle.png)
 
 与之比较类似的中文版本:
 
@@ -240,7 +266,7 @@ Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系�
 
 ### Spring AOP 基于AspectJ注解实现AOP
 
-**AspectJ是一个AOP框架，它能够对java代码进行AOP编译（一般在编译期进行），让java代码具有AspectJ的AOP功能（当然需要特殊的编译器）**，可以这样说AspectJ是目前实现AOP框架中最成熟，功能最丰富的语言，更幸运的是，AspectJ与java程序完全兼容，几乎是无缝关联，因此对于有java编程基础的工程师，上手和使用都非常容易。Spring注意到AspectJ在AOP的实现方式上依赖于特殊编译器(ajc编译器)，因此Spring很机智回避了这点，转向采用动态代理技术的实现原理来构建Spring AOP的内部机制（动态织入），这是与AspectJ（静态织入）最根本的区别。**Spring 只是使用了与 AspectJ 5 一样的注解，但仍然没有使用 AspectJ 的编译器，底层依是动态代理技术的实现，因此并不依赖于 AspectJ 的编译器**。 Spring AOP虽然是使用了那一套注解，其实实现AOP的底层是使用了动态代理(JDK或者CGLib)来动态植入。
+**AspectJ是一个AOP框架，它能够对java代码进行AOP编译（一般在编译期进行），让java代码具有AspectJ的AOP功能（当然需要特殊的编译器）**，可以这样说AspectJ是目前实现AOP框架中最成熟，功能最丰富的语言，更幸运的是，AspectJ与java程序完全兼容，几乎是无缝关联，因此对于有java编程基础的工程师，上手和使用都非常容易。Spring注意到AspectJ在AOP的实现方式上依赖于特殊编译器(ajc编译器)，因此Spring很机智回避了这点，转向采用动态代理技术的实现原理来构建Spring AOP的内部机制（动态织入），这是与AspectJ（静态织入）最根本的区别。**Spring 只是使用了与 AspectJ 5 一样的注解，但仍然没有使用 AspectJ 的编译器，底层依是动态代理技术的实现，因此并不依赖于 AspectJ 的编译器**。 Spring AOP虽然是使用了那一套注解，其实实现AOP的底层是使用了动态代理(JDK或者CGLib)来动态织入。
 
 ## AOP 基本概念
 

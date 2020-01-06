@@ -5,6 +5,7 @@
     * [MVC模式在Web中应用](#MVC模式在Web中应用)
   * [Spring MVC](#Spring-MVC)
     * [SpringMVC 特点](#SpringMVC-特点)
+    * [对比 Struts2](#对比-Struts2)
 * [Spring MVC请求响应过程](#Spring-MVC请求响应过程)
   * [Spring MVC组件](#Spring-MVC组件)
     * [DispatcherServlet 前端控制器](#DispatcherServlet-前端控制器)
@@ -17,8 +18,8 @@
     * [处理器映射 HandlerMapping](#处理器映射-HandlerMapping)
     * [处理器适配器 HandlerAdapter](#处理器适配器-HandlerAdapter)
     * [参数解析 HandlerAdapter Handler](#参数解析-HandlerAdapter-Handler)
-    * [视图解析 View & ViewResolver](#视图解析-View--ViewResolver)
-    * [标签 `<mvc:annotation-driven/>`](#标签-mvcannotation-driven)
+    * [视图解析 View &amp; ViewResolver](#视图解析-View-amp-ViewResolver)
+    * [标签 &lt;mvc:annotation-driven/&gt;](#标签-ltmvcannotation-drivengt)
 * [Spring MVC 注解](#Spring-MVC-注解)
 <!-- GFM-TOC --> 
 
@@ -96,6 +97,17 @@ Spring MVC采用了松散耦合的可插拔组件结构，比其他的MVC框架�
 8. 本地化、主题的解析的支持，使我们更容易进行国际化和主题的切换。
 9. 非常容易与其它视图技术集成，如Velocity、FreeMarker等，因为模型数据不放在特定的API里，而是放在一 个Model里（Map数据结构实现，因此很容易被其他框架使用）。
 10. RESTful风格的支持、简单的文件上传、约定优于配置的契约式编程支持、基于注解的零配置支持。
+
+### 对比 Struts2
+
+1. spring mvc是基于方法的设计，而struts2是基于类的设计。 
+2. struts2有以自己的interceptor机制，spring mvc用的是独立的AOP方式。 
+3. spring mvc的方法之间基本上独立的，独享request response数据，struts2所有Action变量是共享的。 
+4. 机制：spring mvc的入口是servlet，而struts2是filter。 
+5. 性能：spring会稍微比struts快。 spring mvc是基于方法的设计 ， 而sturts是基于类 ， 每次发一次请求都会实例一个action，每个action都会被注入属性，而spring基于方法，粒度更细
+6. 参数传递：struts是在接受参数的时候，可以用属性来接受参数，这就说明参数是让多个方法共享的。
+7. 设计思想上： struts更加符合oop的编程思想 ， spring就比较谨慎，在servlet上扩展。 
+8. intercepter(拦截器)的实现机制：struts有以自己的interceptor机制， spring mvc用的是独立的AOP方式 。
 
 # Spring MVC请求响应过程
 
