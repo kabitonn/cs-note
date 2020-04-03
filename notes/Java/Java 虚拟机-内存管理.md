@@ -774,7 +774,7 @@ ParNew 收集器在单CPU环境中绝不会有比Seriel收集器更好的效果�
 
 <div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/08f32fd3-f736-4a67-81ca-295b2a7972f2.jpg" width=""/> </div><br>
 
-是 Serial 收集器的老年代版本，**使用多线程和“标记-整理”算法**，也是给 Client 场景下的虚拟机使用。如果用在 Server 场景下，它有两大用途：
+是 Serial 收集器的老年代版本，**使用单线程和“标记-整理”算法**，也是给 Client 场景下的虚拟机使用。如果用在 Server 场景下，它有两大用途：
 
 - 在 JDK 1.5 以及之前版本(Parallel Old 诞生以前)中与 Parallel Scavenge 收集器搭配使用。
 - 作为 CMS 收集器的后备预案，在并发收集发生 Concurrent Mode Failure 时使用。
