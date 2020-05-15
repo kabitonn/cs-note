@@ -94,6 +94,14 @@ Spring 时代我们一般通过 XML 文件来配置 Bean，后来开发人员觉
 
 ## Spring IOC 工作过程
 
+### Spring Web项目IOC工作过程
+
+在Web项目使用Spring，是通过在web.xml里面配置：org.springframework.web.context.ContextLoaderListener 来初始化IOC容器的。ContextLoaderListener这个监听对象，监听的是ServletContext这个,当web容器初始化，ServletContext发生变化的时候，会触发相应的事件。
+
+ContextLoaderListener继承了ContextLoader，并实现了ServletContextListener接口，在web容器初始化的时候，会触发ServletContextListener接口中的contextInitialized()方法，同理，在容器关闭的时候，会触发对应的contextDestroyed()方法。
+
+### Spring 非Web项目IOC工作过程
+
 **Spring IoC的初始化过程：** 读取XML资源，并解析，最终注册到Bean Factory中
 
 ![Spring IoC的初始化过程](../../assets/cs-note/framework/spring/SpringIOC初始化过程.png)
