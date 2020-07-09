@@ -41,7 +41,7 @@
     * [创建 scheduled task](#创建-scheduled-task)
     * [启动类`@EnableScheduling`注解](#启动类EnableScheduling注解)
     * [自定义线程池执行 scheduled task](#自定义线程池执行-scheduled-task)
-    * [@EnableAsync 和 @Async 使定时任务并行执行](#EnableAsync-和-Async-使定时任务并行执行)
+    * [@EnableAsync 和 @Async  使定时任务并行执行](#EnableAsync-和-Async-使定时任务并行执行)
   * [Spring Boot 异步编程](#Spring-Boot-异步编程)
 * [Spring Security](#Spring-Security)
 <!-- GFM-TOC --> 

@@ -3,6 +3,8 @@
   * [Spring模块](#Spring模块)
 * [Spring IoC](#Spring-IoC)
   * [Spring IOC 工作过程](#Spring-IOC-工作过程)
+    * [Spring Web项目IOC工作过程](#Spring-Web项目IOC工作过程)
+    * [Spring 非Web项目IOC工作过程](#Spring-非Web项目IOC工作过程)
   * [Spring依赖注入](#Spring依赖注入)
   * [Spring Bean](#Spring-Bean)
     * [bean 作用域](#bean-作用域)

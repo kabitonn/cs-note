@@ -18,8 +18,8 @@
     * [处理器映射 HandlerMapping](#处理器映射-HandlerMapping)
     * [处理器适配器 HandlerAdapter](#处理器适配器-HandlerAdapter)
     * [参数解析 HandlerAdapter Handler](#参数解析-HandlerAdapter-Handler)
-    * [视图解析 View &amp; ViewResolver](#视图解析-View-amp-ViewResolver)
-    * [标签 &lt;mvc:annotation-driven/&gt;](#标签-ltmvcannotation-drivengt)
+    * [视图解析 View & ViewResolver](#视图解析-View--ViewResolver)
+    * [标签 `<mvc:annotation-driven/>`](#标签-mvcannotation-driven)
 * [Spring MVC 注解](#Spring-MVC-注解)
 <!-- GFM-TOC --> 
 
