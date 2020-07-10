@@ -34,6 +34,7 @@
 # ☕️ Java 
 
 - [Java 基础](notes/Java/Java%20基础.md) </br>
+- [Java 高级](notes/Java/Java%20高级.md)
 - [Java 容器](notes/Java/Java%20容器.md) </br>
 - [Java 并发基础](notes/Java/Java%20并发基础.md) </br>
 - [Java 并发进阶](notes/Java/Java%20并发进阶.md) </br>
