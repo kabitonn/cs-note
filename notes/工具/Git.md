@@ -10,6 +10,7 @@
 * [SSH 传输设置](#SSH-传输设置)
 * [.gitignore 文件](#gitignore-文件)
 * [Git 命令一览](#Git-命令一览)
+  * [git常用命令](#git常用命令)
 * [参考资料](#参考资料)
 <!-- GFM-TOC -->
 
@@ -151,6 +152,28 @@ $ ssh-keygen -t rsa -C "youremail@example.com"
 <div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/7a29acce-f243-4914-9f00-f2988c528412.jpg" width=""> </div><br>
 
 比较详细的地址：http://www.cheat-sheets.org/saved-copy/git-cheat-sheet.pdf
+
+## git常用命令
+
+- 克隆项目：git clone xxx.git 
+- 创建分支：git branch daily/1.0.0
+- 切换分支：git checkout daily/1.0.0
+- 查看本地分支：git branch
+- 查出远程分支：git branch -r
+- 查看本地远程分支:git branch -a
+- 创建并切换分支：git checkout -b daily/1.0.0
+- 删除本地分支：git branch -d daily/1.0.0
+- 强制删除本地分支：git branch -D daily/1.0.0
+- 查看分支状态：git status
+- 添加文件到git: git add file1 file2
+- 添加所有文件: git add .
+- 提交文件: git commit -m'注释'
+- 拉主干：git pull origin master
+- 合并主干：git merge master
+- 更新分支：git pull -u origin daily/1.0.0
+- 推送代码到远端：git push -u origin daily/1.0.0
+- 打tag: git tag publish/1.0.0
+- 发布到主干：git push -u origin publish/1.0.0
 
 # 参考资料
 

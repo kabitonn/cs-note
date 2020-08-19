@@ -111,6 +111,8 @@ Spring MVC采用了松散耦合的可插拔组件结构，比其他的MVC框架�
 
 # Spring MVC请求响应过程
 
+![](../../assets/cs-note/framework/spring/mk-2020-07-12-11-02-07.png)
+
 ![](../../assets/cs-note/framework/spring/SpringMVC请求响应处理流程.png)
 
 具体步骤：

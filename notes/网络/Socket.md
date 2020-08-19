@@ -1,19 +1,29 @@
 <!-- GFM-TOC -->
-* [一、I/O 模型](#一io-模型)
-    * [阻塞式 I/O](#阻塞式-io)
-    * [非阻塞式 I/O](#非阻塞式-io)
-    * [I/O 复用](#io-复用)
-    * [信号驱动 I/O](#信号驱动-io)
-    * [异步 I/O](#异步-io)
-    * [五大 I/O 模型比较](#五大-io-模型比较)
-* [二、I/O 复用](#二io-复用)
-    * [select](#select)
-    * [poll](#poll)
-    * [比较](#比较)
-    * [epoll](#epoll)
-    * [工作模式](#工作模式)
-    * [应用场景](#应用场景)
+* [一、I/O 模型](#一IO-模型)
+  * [阻塞式 I/O](#阻塞式-IO)
+  * [非阻塞式 I/O](#非阻塞式-IO)
+  * [I/O 复用](#IO-复用)
+  * [信号驱动 I/O](#信号驱动-IO)
+  * [异步 I/O](#异步-IO)
+  * [五大 I/O 模型比较](#五大-IO-模型比较)
+* [二、I/O 复用](#二IO-复用)
+  * [文件描述符](#文件描述符)
+  * [select](#select)
+  * [poll](#poll)
+  * [比较](#比较)
+    * [1. 功能](#1-功能)
+    * [2. 速度](#2-速度)
+    * [3. 可移植性](#3-可移植性)
+  * [epoll](#epoll)
+  * [工作模式](#工作模式)
+    * [1. LT 模式](#1-LT-模式)
+    * [2. ET 模式](#2-ET-模式)
+  * [应用场景](#应用场景)
+    * [1. select 应用场景](#1-select-应用场景)
+    * [2. poll 应用场景](#2-poll-应用场景)
+    * [3. epoll 应用场景](#3-epoll-应用场景)
 * [参考资料](#参考资料)
+* [微信公众号](#微信公众号)
 <!-- GFM-TOC -->
 
 
@@ -96,6 +106,12 @@ ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags, struct sockaddr *
 # 二、I/O 复用
 
 select/poll/epoll 都是 I/O 多路复用的具体实现，select 出现的最早，之后是 poll，再是 epoll。
+
+## 文件描述符
+
+文件描述符（File descriptor）是计算机科学中的一个术语，是一个用于表述指向文件的引用的抽象化概念。
+
+文件描述符在形式上是一个非负整数。实际上，它是一个索引值，指向内核为每一个进程所维护的该进程打开文件的记录表。当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符。在程序设计中，一些涉及底层的程序编写往往会围绕着文件描述符展开。但是文件描述符这一概念往往只适用于UNIX、Linux这样的操作系统。
 
 ## select
 
@@ -229,6 +245,8 @@ int epoll_create(int size);
 int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)；
 int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout);
 ```
+
+[epoll本质](https://www.cnblogs.com/Joy-Hu/p/10762239.html)
 
 epoll_ctl() 用于向内核注册新的描述符或者是改变某个文件描述符的状态。已注册的描述符在内核中会被维护在一棵红黑树上，通过回调函数内核会将 I/O 准备好的描述符加入到一个链表中管理，进程调用 epoll_wait() 便可以得到事件完成的描述符。
 

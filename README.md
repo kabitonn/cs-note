@@ -53,11 +53,26 @@
 - [缓存](notes/系统设计/缓存.md) </br>
 - [消息队列](notes/系统设计/消息队列.md)
 
+# 🔧 分布式中间件
+
+- [分布式中间件](notes/分布式中间件/分布式中间件.md)
+- [分布式消息](notes/分布式中间件/分布式消息.md)
+- [分布式服务](notes/分布式中间件/分布式服务.md)
+- [分布式缓存](notes/分布式中间件/分布式缓存.md)
+- [分布式事务](notes/分布式中间件/分布式事务.md)
+- [分布式数据库](notes/分布式中间件/分布式数据库.md)
+- [分布式调度](notes/分布式中间件/分布式调度.md)
+- [分布式计算](notes/分布式中间件/分布式计算.md)
+- [配置中心](notes/分布式中间件/配置中心.md)
+
+
+
 # 🔨 常用框架和软件
 
 - [Spring](notes/框架/Spring.md)
 - [Spring MVC](notes/框架/Spring-MVC.md)
 - [SpringBoot](notes/框架/SpringBoot.md)
+- [PandoraBoot](notes/框架/Pandora%20Boot.md)
 - [Dubbo](notes/框架/Dubbo.md)
 - [Zookeeper](notes/框架/Zookeeper.md)
 - [RabbitMQ](notes/框架/RabbitMQ.md)
