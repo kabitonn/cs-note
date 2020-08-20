@@ -1,0 +1,34 @@
+package com.vika.algorithm.leetcode.easy.S801_1000;
+
+import algorithm.datastructure.ListNode;
+
+public class S876MiddleoftheLinkedList {
+    public ListNode middleNode(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        ListNode mid = null;
+        if (fast.next == null) {
+            mid = slow;
+        } else {
+            mid = slow.next;
+        }
+        return mid;
+    }
+
+    public ListNode middleNode1(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+}
