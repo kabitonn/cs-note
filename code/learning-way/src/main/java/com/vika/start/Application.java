@@ -1,7 +1,7 @@
 package com.vika.start;
 
-import mapstruct.Person;
-import mapstruct.PersonMapper;
+import com.vika.mapstruct.Person;
+import com.vika.mapstruct.PersonMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

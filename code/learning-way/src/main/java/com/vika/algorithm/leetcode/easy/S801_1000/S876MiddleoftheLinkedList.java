@@ -1,6 +1,6 @@
 package com.vika.algorithm.leetcode.easy.S801_1000;
 
-import algorithm.datastructure.ListNode;
+import com.vika.algorithm.datastructure.ListNode;
 
 public class S876MiddleoftheLinkedList {
     public ListNode middleNode(ListNode head) {

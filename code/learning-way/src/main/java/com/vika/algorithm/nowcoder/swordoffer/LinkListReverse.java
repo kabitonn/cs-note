@@ -1,7 +1,7 @@
 package com.vika.algorithm.nowcoder.swordoffer;
 
 
-import algorithm.datastructure.ListNode;
+import  com.vika.algorithm.datastructure.ListNode;
 
 import java.util.ArrayList;
 import java.util.Collections;

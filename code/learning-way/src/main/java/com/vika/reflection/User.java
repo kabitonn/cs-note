@@ -1,6 +1,6 @@
 package com.vika.reflection;
 
-import annotation.FieldMeta;
+import com.vika.annotation.FieldMeta;
 import lombok.Data;
 import org.junit.Test;
 import org.springframework.util.ReflectionUtils;

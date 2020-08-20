@@ -1,6 +1,6 @@
 package com.vika.algorithm.nowcoder.swordoffer;
 
-import algorithm.datastructure.TreeNode;
+import  com.vika.algorithm.datastructure.TreeNode;
 
 import java.util.*;
 

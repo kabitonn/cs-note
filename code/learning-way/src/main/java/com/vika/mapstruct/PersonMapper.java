@@ -2,7 +2,7 @@ package com.vika.mapstruct;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-import reflection.User;
+import com.vika.reflection.User;
 
 /**
  * @author ：chenwei.tjw

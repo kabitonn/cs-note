@@ -1,7 +1,7 @@
 package com.vika.mapstruct;
 
 import org.junit.Test;
-import reflection.User;
+import com.vika.reflection.User;
 
 /**
  * @author ：chenwei.tjw

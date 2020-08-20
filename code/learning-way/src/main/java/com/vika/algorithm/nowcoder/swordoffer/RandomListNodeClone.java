@@ -1,6 +1,6 @@
 package com.vika.algorithm.nowcoder.swordoffer;
 
-import algorithm.datastructure.RandomListNode;
+import  com.vika.algorithm.datastructure.RandomListNode;
 import org.junit.Test;
 
 import java.util.HashMap;

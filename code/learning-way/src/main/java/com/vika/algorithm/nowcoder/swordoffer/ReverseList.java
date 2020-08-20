@@ -1,6 +1,6 @@
 package com.vika.algorithm.nowcoder.swordoffer;
 
-import algorithm.datastructure.ListNode;
+import  com.vika.algorithm.datastructure.ListNode;
 
 public class ReverseList {
 

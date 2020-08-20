@@ -472,6 +472,10 @@ Exception分为运行时异常RuntimeException和非运行时异常。事务管�
 
 为@Configuration与@ComponentScan的组合注解，可以替代这两个注解
 
+@**ImportResource**
+
+导⼊XML中的bean的元数据
+
 ## 切面(AOP)相关注解
 
 Spring支持AspectJ的注解式切面编程。

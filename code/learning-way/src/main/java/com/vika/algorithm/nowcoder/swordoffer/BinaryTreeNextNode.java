@@ -1,6 +1,6 @@
 package com.vika.algorithm.nowcoder.swordoffer;
 
-import algorithm.datastructure.TreeLinkNode;
+import com.vika.algorithm.datastructure.TreeLinkNode;
 
 public class BinaryTreeNextNode {
 
