@@ -20,7 +20,11 @@
 * [二、MySQL事务](#二MySQL事务)
   * [重做日志 redo log](#重做日志-redo-log)
   * [回滚日志 undo log](#回滚日志-undo-log)
+    * [insert undo log](#insert-undo-log)
+    * [update undo log](#update-undo-log)
   * [MVCC实现](#MVCC实现)
+    * [undo log](#undo-log)
+    * [ReadView](#ReadView)
 * [三、查询性能优化](#三查询性能优化)
   * [使用 Explain 进行分析](#使用-Explain-进行分析)
   * [优化数据访问](#优化数据访问)
@@ -227,8 +231,16 @@ redo log重做日志，主要的流程如上图。当得到数据操作的要求
 
 undo log主要是对于事务之前的数据状态进行记录。以便在事务提交失败之后，根据undo log进行ROLLBACK。
 
+### insert undo log
+代表事务在insert新记录时产生的undo log, 只在事务回滚时需要，并且在事务提交后可以被立即丢弃
+
+### update undo log
+事务在进行update或delete时产生的undo log; 不仅在事务回滚时需要，在快照读时也需要；所以不能随便删除，只有在快速读或事务回滚不涉及该日志时，对应的日志才会被purge线程统一清除
 
 ## MVCC实现
+
+MVCC的目的就是多版本并发控制，在数据库中的实现，就是为了解决读写冲突，它的实现原理主要是依赖记录中的2个隐式字段，undo日志 ，Read View 来实现的
+
 
 InnoDB为数据库中存储的每行数据添加两个字段来实现MVCC：
 
@@ -237,33 +249,34 @@ InnoDB为数据库中存储的每行数据添加两个字段来实现MVCC：
 
 此外，还有
 - 隐藏主键（DB_ROW_ID），标行标识（隐藏单调自增id）
-- 删除位（DELETE BIT），标识该记录是否被删除，物理删除是在mysql进行数据的GC，清理历史版本数据的时候。
+- 删除位（DELETE_BIT），标识该记录是否被删除，物理删除是在mysql进行数据的GC，清理历史版本数据的时候。
 
-在可重读Repeatable reads事务隔离级别下：
+### undo log
 
-- SELECT：
-  - 读取创建版本号<=当前事务版本号。确保事务读取的行，要么是在事务开始前已经存在，要么是事务自身插入或者修改过的。
-  - 删除版本号为空或>当前事务版本号。确保事务读取到的行，在事务开始之前未被删除。
-- INSERT：创建一条新数据，DB_TRX_ID设置为当前事务ID，DB_ROLL_PT为NULL，即没有需要回滚的数据指向
-- DELETE：将当前行的DB_TRX_ID设置为当前事务ID，DELETE BIT设置为1
-- UPDATE：复制了一行，新行的DB_TRX_ID为当前事务ID，DB_ROLL_PT指向了上一个版本的undo log，事务提交后DB_ROLL_PT置为NULL
 
-通过MVCC，可以减少锁的使用，大多数读操作都不用加锁，读数据操作很简单，性能很好，并且也能保证只会读取到符合标准的行，也只锁住必要行。具有以下特性：
+对MVCC有帮助的实质是update undo log ，undo log实际上就是存在rollback segment中旧记录链
 
-- 每一个写操作都会创建一个新版本的数据，读写能够并发进行
-- 每个读事务相当于看到数据当前的一个快照
-- 读写操作之间的冲突不再需要被关注，只需要管理和快速挑选数据的版本
-- serializable snapshot isolation 可串行化快照隔离
+- purge线程
+>从前面的分析可以看出，为了实现InnoDB的MVCC机制，更新或者删除操作都只是设置一下老记录的deleted_bit，并不真正将过时的记录删除。
+为了节省磁盘空间，InnoDB有专门的purge线程来清理deleted_bit为true的记录。为了不影响MVCC的正常工作，purge线程自己也维护了一个read view（这个read view相当于系统中最老活跃事务的read view）;如果某个记录的deleted_bit为true，并且DB_TRX_ID相对于purge线程的read view可见，那么这条记录一定是可以被安全清除的。
 
-正是Read View生成时机的不同，从而造成RC,RR级别下快照读的结果的不同
+
+### ReadView
+
+Read View就是事务进行快照读操作的时候生产的读视图(Read View)，在该事务执行的快照读的那一刻，会生成数据库系统当前的一个快照，记录并维护系统当前活跃事务的ID
+
+正是Read View生成时机的不同，从而造成RC,RR级别下快照读的结果的不同。
+在RC隔离级别下，是每个快照读都会生成并获取最新的Read View；而在RR隔离级别下，则是同一个事务中的第一个快照读才会创建Read View, 之后的快照读获取的都是同一个Read View。
+#### REPEATABLE READ
+
 
 在RR级别下的某个事务的对某条记录的第一次快照读会创建一个快照及Read View, 将当前系统活跃的其他事务记录起来，此后在调用快照读的时候，还是使用的是同一个Read View，所以只要当前事务在其他事务提交更新之前使用过快照读，那么之后的快照读使用的都是同一个Read View，所以对之后的修改不可见；
 
 即RR级别下，快照读生成Read View时，Read View会记录此时所有其他活动事务的快照，这些事务的修改对于当前事务都是不可见的。而早于Read View创建的事务所做的修改均是可见
 
-而在RC级别下的，事务中，每次快照读都会新生成一个快照和Read View, 这就是我们在RC级别下的事务中可以看到别的事务提交的更新的原因
+#### READ COMMITTED
 
-总之在RC隔离级别下，是每个快照读都会生成并获取最新的Read View；而在RR隔离级别下，则是同一个事务中的第一个快照读才会创建Read View, 之后的快照读获取的都是同一个Read View。
+而在RC级别下的，事务中，每次快照读都会新生成一个快照和Read View, 这就是我们在RC级别下的事务中可以看到别的事务提交的更新的原因
 
 
 # 三、查询性能优化
