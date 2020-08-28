@@ -830,6 +830,8 @@ HTTPS 采用混合的加密机制，使用非对称密钥加密用于传输对�
 
 <div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/How-HTTPS-Works.png" width="600"/> </div><br>
 
+![](../../assets/cs-note/distribute/mk-2020-08-28-15-17-29.png)
+
 ## 认证
 
 通过使用  **证书**  来对通信方进行认证。
