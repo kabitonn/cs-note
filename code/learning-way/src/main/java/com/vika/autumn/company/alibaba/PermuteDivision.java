@@ -89,4 +89,23 @@ public class PermuteDivision {
     public void test() {
         System.out.println(countFit(322, 2));
     }
+
+    public int trailingZeroes(int n) {
+        int count = 0;
+        while(n/5!=0) {
+            count += n/5;
+            n/=5;
+        }
+        return count;
+    }
+
+    @Test
+    public void test1(){
+        System.out.println(trailingZeroes(10000));
+    }
+
+    @Test
+    public void test2(){
+        System.out.println(Math.pow(2,100)%7);
+    }
 }
