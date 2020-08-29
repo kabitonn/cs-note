@@ -40,8 +40,9 @@
     * [10. 与HashSet 的比较](#10-与HashSet-的比较)
   * [ConcurrentHashMap](#ConcurrentHashMap)
     * [1. 存储结构](#1-存储结构-1)
-    * [2. size 操作](#2-size-操作)
-    * [3. 和 Hashtable 的对比](#3-和-Hashtable-的对比)
+    * [2. put 操作](#2-put-操作)
+    * [3. size 操作](#3-size-操作)
+    * [4. 和 Hashtable 的对比](#4-和-Hashtable-的对比)
   * [LinkedHashMap](#LinkedHashMap)
     * [存储结构](#存储结构)
     * [afterNodeAccess()](#afterNodeAccess)
@@ -826,12 +827,13 @@ static int indexFor(int h, int length) {
 
 和扩容相关的参数主要有：capacity、size、threshold 和 load_factor。
 
-|    参数    | 含义                                                                          |
-| :--------: | :---------------------------------------------------------------------------- |
-|  capacity  | table 的容量大小，默认为 16。需要注意的是 capacity 必须保证为 2 的 n 次方。   |
-|    size    | 键值对数量。                                                                  |
-| threshold  | size 的临界值，当 size 大于等于 threshold 就必须进行扩容操作。                |
-| loadFactor | 装载因子，table 能够使用的比例，threshold = (int)(newCapacity * loadFactor)。 |
+|       参数       | 含义                                                                          |
+| :--------------: | :---------------------------------------------------------------------------- |
+|     capacity     | table 的容量大小，默认为 16。需要注意的是 capacity 必须保证为 2 的 n 次方。   |
+|       size       | 键值对数量。                                                                  |
+|    threshold     | size 的临界值，当 size 大于等于 threshold 就必须进行扩容操作。                |
+|    loadFactor    | 装载因子，table 能够使用的比例，threshold = (int)(newCapacity * loadFactor)。 |
+| MAXIMUM_CAPACITY | 最大容量2^30, 最终容量Integer.MAX_VALUE                                       |
 
 ```java
     static final int DEFAULT_INITIAL_CAPACITY = 16;
@@ -1063,8 +1065,24 @@ synchronized只锁定当前链表或红黑二叉树的首节点，这样只要ha
 ![](../../assets/cs-note/java-collection/jdk8的ConcurrentHashMap结构.png)
 </div>
 
-### 2. size 操作
+### 2. put 操作
 
+#### JDK1.7
+
+当执行put方法插入数据时，根据key的hash值，在Segment数组中找到相应的位置，如果相应位置的Segment还未初始化，则通过CAS进行赋值，接着执行Segment对象的put方法通过加锁机制插入数据，实现如下：
+
+#### JDK1.8
+
+当执行put方法插入数据时，根据key的hash值，在Node数组中找到相应的位置，实现如下：
+
+1. 如果相应位置的Node还未初始化，则通过CAS插入相应的数据；
+2. 如果相应位置的Node不为空，且当前该节点不处于移动状态，则对该节点加synchronized锁，如果该节点的hash不小于0，则遍历链表更新节点或插入新节点；
+3. 如果该节点是TreeBin类型的节点，说明是红黑树结构，则通过putTreeVal方法往红黑树中插入节点；
+4. 如果binCount不为0，说明put操作对数据产生了影响，如果当前链表的个数达到8个，则通过treeifyBin方法转化为红黑树，如果oldVal不为空，说明是一次更新操作，没有对元素个数产生影响，则直接返回旧值；
+5. 如果插入的是一个新节点，则执行addCount()方法尝试更新元素个数baseCount；
+
+### 3. size 操作
+#### JDK1.7
 每个 Segment 维护了一个 count 变量来统计该 Segment 中的键值对个数。
 
 ```java
@@ -1130,7 +1148,15 @@ ConcurrentHashMap 在执行 size 操作时先尝试不加锁，如果连续两�
     }
 ```
 
-### 3. 和 Hashtable 的对比
+#### JDK1.8
+
+- 使用一个volatile类型的变量baseCount记录元素的个数，当插入新数据或则删除数据时，会通过addCount()方法更新baseCount
+  1. 初始化时counterCells为空，在并发量很高时，如果存在两个线程同时执行CAS修改baseCount值，则失败的线程会继续执行方法体中的逻辑，使用CounterCell记录元素个数的变化；
+  2. 如果CounterCell数组counterCells为空，调用fullAddCount()方法进行初始化，并插入对应的记录数，通过CAS设置cellsBusy字段，只有设置成功的线程才能初始化CounterCell数组
+  3. 如果通过CAS设置cellsBusy字段失败的话，则继续尝试通过CAS修改baseCount字段，如果修改baseCount字段成功的话，就退出循环，否则继续循环插入CounterCell对象
+- size实现比1.7简单多，因为元素个数保存baseCount中，部分元素的变化个数保存在CounterCell数组中，通过累加baseCount和CounterCell数组中的数量，即可得到元素的总个数 
+
+### 4. 和 Hashtable 的对比
 
 - 底层数据结构： JDK1.7的 ConcurrentHashMap 底层采用 分段的数组+链表 实现，JDK1.8 采用的数据结构跟HashMap1.8的结构一样，数组+链表/红黑二叉树。Hashtable 和 JDK1.8 之前的 HashMap 的底层数据结构类似都是采用 数组+链表 的形式，数组是 HashMap 的主体，链表则是主要为了解决哈希冲突而存在的；
 - 实现线程安全的方式(重要)：
