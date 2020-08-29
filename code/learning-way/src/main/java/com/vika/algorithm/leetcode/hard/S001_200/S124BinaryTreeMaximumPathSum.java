@@ -1,6 +1,7 @@
 package com.vika.algorithm.leetcode.hard.S001_200;
 
-import  com.vika.algorithm.datastructure.TreeNode;
+
+import com.vika.algorithm.leetcode.common.TreeNode;
 
 public class S124BinaryTreeMaximumPathSum {
 

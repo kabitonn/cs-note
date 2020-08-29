@@ -1,6 +1,6 @@
 package com.vika.algorithm.nowcoder.swordoffer;
 
-import  com.vika.algorithm.datastructure.TreeNode;
+import  com.vika.algorithm.nowcoder.datastructure.TreeNode;
 
 import java.util.HashMap;
 import java.util.Map;

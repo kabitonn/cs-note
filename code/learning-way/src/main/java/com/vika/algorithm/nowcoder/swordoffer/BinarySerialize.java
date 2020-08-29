@@ -1,6 +1,6 @@
 package com.vika.algorithm.nowcoder.swordoffer;
 
-import  com.vika.algorithm.datastructure.TreeNode;
+import  com.vika.algorithm.nowcoder.datastructure.TreeNode;
 
 public class BinarySerialize {
     String Serialize(TreeNode root) {
