@@ -1,4 +1,4 @@
-package alg.common;
+package com.vika.algorithm.alg.common;
 
 import java.util.Random;
 

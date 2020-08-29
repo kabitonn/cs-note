@@ -1,6 +1,7 @@
-package alg.sort;
+package com.vika.algorithm.alg.sort;
 
-import alg.common.RandomArray;
+
+import com.vika.algorithm.alg.common.RandomArray;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;

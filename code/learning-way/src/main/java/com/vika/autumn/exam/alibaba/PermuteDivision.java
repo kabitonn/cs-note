@@ -1,4 +1,4 @@
-package com.vika.autumn.company.alibaba;
+package com.vika.autumn.exam.alibaba;
 
 import org.junit.Test;
 

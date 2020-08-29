@@ -1,21 +1,22 @@
-package com.vika.alg.sort;
+package com.vika.algorithm.alg.sort;
 
-import alg.common.RandomArray;
+
+import com.vika.algorithm.alg.common.RandomArray;
 
 import java.util.Arrays;
 
 public class SortTimeTest {
 
-    alg.sort.QuickSort quickSort = new alg.sort.QuickSort();
-    alg.sort.MergeSort mergeSort = new alg.sort.MergeSort();
-    alg.sort.HeapSort heapSort = new alg.sort.HeapSort();
-    alg.sort.SelectSort selectSort = new alg.sort.SelectSort();
-    alg.sort.InsertSort insertSort = new alg.sort.InsertSort();
-    alg.sort.BubbleSort bubbleSort = new alg.sort.BubbleSort();
-    alg.sort.ShellSort shellSort = new alg.sort.ShellSort();
-    alg.sort.CountingSort countingSort = new alg.sort.CountingSort();
-    alg.sort.BucketSort bucketSort = new alg.sort.BucketSort();
-    alg.sort.RadixSort radixSort = new alg.sort.RadixSort();
+    QuickSort quickSort = new QuickSort();
+    MergeSort mergeSort = new MergeSort();
+    HeapSort heapSort = new HeapSort();
+    SelectSort selectSort = new SelectSort();
+    InsertSort insertSort = new InsertSort();
+    BubbleSort bubbleSort = new BubbleSort();
+    ShellSort shellSort = new ShellSort();
+    CountingSort countingSort = new CountingSort();
+    BucketSort bucketSort = new BucketSort();
+    RadixSort radixSort = new RadixSort();
 
     int x;
 

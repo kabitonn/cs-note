@@ -1,4 +1,4 @@
-package alg.company;
+package com.vika.algorithm.alg.company;
 
 import java.util.Arrays;
 import java.util.Scanner;
