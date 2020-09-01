@@ -58,7 +58,18 @@ public class P147InsertionSortList {
     class Solution {
         public ListNode insertionSortList(ListNode head) {
             ListNode dummy = new ListNode(0);
-            ListNode prev = dummy;
+            ListNode prev, next;
+            ListNode node = head;
+            while (node != null) {
+                prev = dummy;
+                while (prev.next != null && prev.next.val < node.val) {
+                    prev = prev.next;
+                }
+                next = node.next;
+                node.next = prev.next;
+                prev.next = node;
+                node = next;
+            }
 
             return dummy.next;
         }

@@ -2,14 +2,16 @@
 * [一、概述](#一概述)
 * [二、数据类型](#二数据类型)
   * [STRING](#STRING)
+    * [数据结构实现](#数据结构实现)
   * [LIST](#LIST)
+    * [数据结构实现](#数据结构实现-1)
   * [SET](#SET)
+    * [数据结构实现](#数据结构实现-2)
   * [HASH](#HASH)
+    * [数据结构实现](#数据结构实现-3)
   * [ZSET](#ZSET)
-* [三、数据结构](#三数据结构)
-  * [字典](#字典)
-  * [跳跃表](#跳跃表)
-* [四、使用场景](#四使用场景)
+    * [数据结构实现](#数据结构实现-4)
+* [三、使用场景](#三使用场景)
   * [计数器](#计数器)
   * [缓存](#缓存)
   * [查找表](#查找表)
@@ -17,28 +19,28 @@
   * [会话缓存](#会话缓存)
   * [分布式锁实现](#分布式锁实现)
   * [其它](#其它)
-* [五、Redis 与 Memcached](#五Redis-与-Memcached)
+* [四、Redis 与 Memcached](#四Redis-与-Memcached)
   * [数据类型](#数据类型)
   * [数据持久化](#数据持久化)
   * [分布式](#分布式)
   * [内存管理机制](#内存管理机制)
-* [六、键的过期时间](#六键的过期时间)
+* [五、键的过期时间](#五键的过期时间)
   * [删除策略](#删除策略)
-* [七、数据淘汰策略](#七数据淘汰策略)
-* [八、持久化](#八持久化)
+* [六、数据淘汰策略](#六数据淘汰策略)
+* [七、持久化](#七持久化)
   * [RDB 持久化 全量模式持久化](#RDB-持久化-全量模式持久化)
   * [AOF 持久化 增量模式持久化](#AOF-持久化-增量模式持久化)
-* [九、事务](#九事务)
-* [十、事件](#十事件)
+* [八、事务](#八事务)
+* [九、事件](#九事件)
   * [文件事件](#文件事件)
   * [时间事件](#时间事件)
   * [事件的调度与执行](#事件的调度与执行)
-* [十一、复制](#十一复制)
+* [十、复制](#十复制)
   * [连接过程](#连接过程)
   * [主从链](#主从链)
-* [十二、Sentinel](#十二Sentinel)
-* [十三、分片](#十三分片)
-* [十四、一个简单的论坛系统分析](#十四一个简单的论坛系统分析)
+* [十一、Sentinel](#十一Sentinel)
+* [十二、分片](#十二分片)
+* [十三、一个简单的论坛系统分析](#十三一个简单的论坛系统分析)
   * [文章信息](#文章信息)
   * [点赞功能](#点赞功能)
   * [对文章进行排序](#对文章进行排序)
@@ -67,6 +69,20 @@ Redis 支持很多特性，例如将内存中的数据持久化到硬盘中，�
 
 > [What Redis data structures look like](https://redislabs.com/ebook/part-1-getting-started/chapter-1-getting-to-know-redis/1-2-what-redis-data-structures-look-like/)
 
+![](../../assets/cs-note/distribute/mk-2020-09-01-09-54-41.png)
+
+
+```java
+REDIS_ENCODING_INT（long 类型的整数）
+REDIS_ENCODING_EMBSTR embstr （编码的简单动态字符串）
+REDIS_ENCODING_RAW （简单动态字符串）
+REDIS_ENCODING_HT （字典）
+REDIS_ENCODING_LINKEDLIST （双端链表）
+REDIS_ENCODING_ZIPLIST （压缩列表）
+REDIS_ENCODING_INTSET （整数集合）
+REDIS_ENCODING_SKIPLIST （跳跃表和字典）
+```
+
 ## STRING
 
 <div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/6019b2db-bc3e-4408-b6d8-96025f4481d6.png" width="400"/> </div><br>
@@ -81,6 +97,11 @@ OK
 > get hello
 (nil)
 ```
+
+### 数据结构实现
+- int：8个字节的长整型
+- embstr：小于等于39个字节的字符串
+- raw：大于39个字节的字符串
 
 ## LIST
 
@@ -109,6 +130,13 @@ OK
 1) "item2"
 2) "item"
 ```
+
+### 数据结构实现
+- ziplist:
+  - 列表对象保存的所有字符串元素的长度都小于64字节；
+  - 列表元素保存的元素数量小于512个；
+- linkedlist
+
 
 ## SET
 
@@ -144,6 +172,12 @@ OK
 2) "item3"
 ```
 
+### 数据结构实现
+- intset
+  - 集合对象保存的所有元素都是整数值；
+  - 集合对象保存的元素数量不超过 512 个；
+- hashtable
+
 ## HASH
 
 <div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/7bd202a7-93d4-4f3a-a878-af68ae25539a.png" width="400"/> </div><br>
@@ -175,41 +209,13 @@ OK
 2) "value1"
 ```
 
-## ZSET
+### 数据结构实现
+- ziplist:
+  - 哈希对象保存的所有键值对的键和值的字符串长度都小于 64 字节；
+  - 哈希对象保存的键值对数量小于 512 个；
+- hashtable
 
-<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/1202b2d6-9469-4251-bd47-ca6034fb6116.png" width="400"/> </div><br>
-
-```html
-> zadd zset-key 728 member1
-(integer) 1
-> zadd zset-key 982 member0
-(integer) 1
-> zadd zset-key 982 member0
-(integer) 0
-
-> zrange zset-key 0 -1 withscores
-1) "member1"
-2) "728"
-3) "member0"
-4) "982"
-
-> zrangebyscore zset-key 0 800 withscores
-1) "member1"
-2) "728"
-
-> zrem zset-key member1
-(integer) 1
-> zrem zset-key member1
-(integer) 0
-
-> zrange zset-key 0 -1 withscores
-1) "member0"
-2) "982"
-```
-
-# 三、数据结构
-
-## 字典
+#### 字典
 
 dictht 是一个散列表结构，使用拉链法解决哈希冲突。
 
@@ -253,67 +259,54 @@ rehash 操作不是一次性完成，而是采用渐进方式，这是为了避�
 
 渐进式 rehash 通过记录 dict 的 rehashidx 完成，它从 0 开始，然后每执行一次 rehash 都会递增。例如在一次 rehash 中，要把 dict[0] rehash 到 dict[1]，这一次会把 dict[0] 上 table[rehashidx] 的键值对 rehash 到 dict[1] 上，dict[0] 的 table[rehashidx] 指向 null，并令 rehashidx++。
 
-在 rehash 期间，每次对字典执行添加、删除、查找或者更新操作时，都会执行一次渐进式 rehash。
+因为在进行渐进式 rehash 的过程中， 字典会同时使用 ht[0] 和 ht1 两个哈希表， 所以在渐进式 rehash 进行期间， 字典的删除（delete）、查找（find）、更新（update）等操作会在两个哈希表上进行： 比如说， 要在字典里面查找一个键的话， 程序会先在 ht[0] 里面进行查找， 如果没找到的话， 就会继续到 ht1 里面进行查找， 诸如此类。
 
-采用渐进式 rehash 会导致字典中的数据分散在两个 dictht 上，因此对字典的查找操作也需要到对应的 dictht 去执行。
+另外， 在渐进式 rehash 执行期间， 新添加到字典的键值对一律会被保存到 ht1 里面， 而 ht[0] 则不再进行任何添加操作： 这一措施保证了 ht[0] 包含的键值对数量会只减不增， 并随着 rehash 操作的执行而最终变成空表。
 
-```c
-/* Performs N steps of incremental rehashing. Returns 1 if there are still
- * keys to move from the old to the new hash table, otherwise 0 is returned.
- *
- * Note that a rehashing step consists in moving a bucket (that may have more
- * than one key as we use chaining) from the old to the new hash table, however
- * since part of the hash table may be composed of empty spaces, it is not
- * guaranteed that this function will rehash even a single bucket, since it
- * will visit at max N*10 empty buckets in total, otherwise the amount of
- * work it does would be unbound and the function may block for a long time. */
-int dictRehash(dict *d, int n) {
-    int empty_visits = n * 10; /* Max number of empty buckets to visit. */
-    if (!dictIsRehashing(d)) return 0;
+要点
+- 字典使用哈希表作为底层实现， 每个字典带有两个哈希表， 一个用于平时使用， 另一个仅在进行 rehash 时使用
+- 当哈希表保存的键值对数量太多或者太少时， 程序需要对哈希表的大小进行相应的扩展或者收缩（rehash）
+- rehash 动作并不是一次性、集中式地完成的， 而是分多次、渐进式地完成的
+- 渐进式 rehash 的过程中， 字典会同时使用 ht[0] 和 ht[1] 两个哈希表
 
-    while (n-- && d->ht[0].used != 0) {
-        dictEntry *de, *nextde;
+## ZSET
 
-        /* Note that rehashidx can't overflow as we are sure there are more
-         * elements because ht[0].used != 0 */
-        assert(d->ht[0].size > (unsigned long) d->rehashidx);
-        while (d->ht[0].table[d->rehashidx] == NULL) {
-            d->rehashidx++;
-            if (--empty_visits == 0) return 1;
-        }
-        de = d->ht[0].table[d->rehashidx];
-        /* Move all the keys in this bucket from the old to the new hash HT */
-        while (de) {
-            uint64_t h;
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/1202b2d6-9469-4251-bd47-ca6034fb6116.png" width="400"/> </div><br>
 
-            nextde = de->next;
-            /* Get the index in the new hash table */
-            h = dictHashKey(d, de->key) & d->ht[1].sizemask;
-            de->next = d->ht[1].table[h];
-            d->ht[1].table[h] = de;
-            d->ht[0].used--;
-            d->ht[1].used++;
-            de = nextde;
-        }
-        d->ht[0].table[d->rehashidx] = NULL;
-        d->rehashidx++;
-    }
+```html
+> zadd zset-key 728 member1
+(integer) 1
+> zadd zset-key 982 member0
+(integer) 1
+> zadd zset-key 982 member0
+(integer) 0
 
-    /* Check if we already rehashed the whole table... */
-    if (d->ht[0].used == 0) {
-        zfree(d->ht[0].table);
-        d->ht[0] = d->ht[1];
-        _dictReset(&d->ht[1]);
-        d->rehashidx = -1;
-        return 0;
-    }
+> zrange zset-key 0 -1 withscores
+1) "member1"
+2) "728"
+3) "member0"
+4) "982"
 
-    /* More to rehash... */
-    return 1;
-}
+> zrangebyscore zset-key 0 800 withscores
+1) "member1"
+2) "728"
+
+> zrem zset-key member1
+(integer) 1
+> zrem zset-key member1
+(integer) 0
+
+> zrange zset-key 0 -1 withscores
+1) "member0"
+2) "982"
 ```
 
-## 跳跃表
+### 数据结构实现
+
+- ziplist:
+- zskiplist
+
+#### 跳跃表
 
 是有序集合的底层实现之一。
 
@@ -331,7 +324,27 @@ int dictRehash(dict *d, int n) {
 - 更容易实现；
 - 支持无锁操作。
 
-# 四、使用场景
+![](../../assets/cs-note/distribute/mk-2020-09-01-10-39-00.png)
+ 
+ 展示了一个跳跃表示例， 位于图片最左边的是 zskiplist 结构， 该结构包含以下属性：
+
+>
+- header ：指向跳跃表的表头节点。
+- tail ：指向跳跃表的表尾节点。
+- level ：记录目前跳跃表内，层数最大的那个节点的层数（表头节点的层数不计算在内）。
+- length ：记录跳跃表的长度，也即是，跳跃表目前包含节点的数量（表头节点不计算在内）。
+
+zskiplist 结构右边的是四个 zskiplistNode 结构， 该结构包含以下属性：
+
+- 层（level）：节点中用 L1 、 L2 、 L3 等字样标记节点的各个层， L1 代表第一层， L2 代表第二层，以此类推。每个层都带有两个属性：前进指针和跨度。前进指针用于访问位于表尾方向的其他节点，而跨度则记录了前进指针所指向节点和当前节点的距离。在上面的图片中，连线上带有数字的箭头就代表>前进指针，而那个数字就是跨度。当程序从表头向表尾进行遍历时，访问会沿着层的前进指针进行。
+- 后退指针（backward）：节点中用 BW 字样标记节点的后退指针，它指向位于当前节点的前一个节点。后退指针在程序从表尾向表头遍历时使用。
+- 分值（score）：各个节点中的 1.0 、 2.0 和 3.0 是节点所保存的分值。在跳跃表中，节点按各自所保存的分值从小到大排列。
+- 成员对象（obj）：各个节点中的 o1 、 o2 和 o3 是节点所保存的成员对象。
+
+注意表头节点和其他节点的构造是一样的： 表头节点也有后退指针、分值和成员对象， 不过表头节点的这些属性都不会被用到， 所以图中省略了这些部分， 只显示了表头节点的各个层。
+
+
+# 三、使用场景
 
 ## 计数器
 
@@ -373,7 +386,7 @@ Set 可以实现交集、并集等操作，从而实现共同好友等功能。
 
 ZSet 可以实现有序性操作，从而实现排行榜等功能。
 
-# 五、Redis 与 Memcached
+# 四、Redis 与 Memcached
 
 两者都是非关系型内存键值数据库，主要有以下不同：
 
@@ -397,7 +410,7 @@ Redis Cluster 实现了分布式的支持。
 
 - Memcached 将内存分割成特定长度的块来存储数据，以完全解决内存碎片的问题。但是这种方式会使得内存的利用率不高，例如块的大小为 128 bytes，只存储 100 bytes 的数据，那么剩下的 28 bytes 就浪费掉了。
 
-# 六、键的过期时间
+# 五、键的过期时间
 
 Redis 可以为每个键设置过期时间，当键过期时，会自动删除该键。
 
@@ -417,7 +430,7 @@ Redis 采用的是 定期删除+惰性/懒汉式删除
 
 怎么解决这个问题呢？答案就是： Redis 内存淘汰机制。
 
-# 七、数据淘汰策略
+# 六、数据淘汰策略
 
 可以设置内存最大使用量，当内存使用量超出时，会施行数据淘汰策略。
 
@@ -438,7 +451,7 @@ Redis 具体有 6 种淘汰策略：
 
 Redis 4.0 引入了 volatile-lfu 和 allkeys-lfu 淘汰策略，LFU 策略通过统计访问频率，将访问频率最少的键值对淘汰。
 
-# 八、持久化
+# 七、持久化
 
 Redis 是内存型数据库，为了保证数据在断电后不会丢失，需要将内存中的数据持久化到硬盘上。
 
@@ -481,7 +494,7 @@ AOF 重写是一个有歧义的名字，该功能是通过读取数据库中的�
 
 在执行 BGREWRITEAOF 命令时，Redis 服务器会维护一个 AOF 重写缓冲区，该缓冲区会在子进程创建新 AOF 文件期间，记录服务器执行的所有写命令。当子进程完成创建新 AOF 文件的工作之后，服务器会将重写缓冲区中的所有内容追加到新 AOF 文件的末尾，使得新旧两个 AOF 文件所保存的数据库状态一致。最后，服务器用新的 AOF 文件替换旧的 AOF 文件，以此来完成 AOF 文件重写操作
 
-# 九、事务
+# 八、事务
 
 一个事务包含了多个命令，服务器在执行事务期间，不会改去执行其它客户端的命令请求。
 
@@ -489,7 +502,7 @@ AOF 重写是一个有歧义的名字，该功能是通过读取数据库中的�
 
 Redis 最简单的事务实现方式是使用 MULTI 和 EXEC 命令将事务操作包围起来。
 
-# 十、事件
+# 九、事件
 
 Redis 服务器是一个事件驱动程序。
 
@@ -561,7 +574,7 @@ def main():
 
 <div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/c0a9fa91-da2e-4892-8c9f-80206a6f7047.png" width="350"/> </div><br>
 
-# 十一、复制
+# 十、复制
 
 通过使用 slaveof host port 命令来让一个服务器成为另一个服务器的从服务器。
 
@@ -581,11 +594,11 @@ def main():
 
 <div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/395a9e83-b1a1-4a1d-b170-d081e7bb5bab.png" width="600"/> </div><br>
 
-# 十二、Sentinel
+# 十一、Sentinel
 
 Sentinel（哨兵）可以监听集群中的服务器，并在主服务器进入下线状态时，自动从从服务器中选举出新的主服务器。
 
-# 十三、分片
+# 十二、分片
 
 分片是将数据划分为多个部分的方法，可以将数据存储到多台机器里面，这种方法在解决某些问题时可以获得线性级别的性能提升。
 
@@ -600,7 +613,7 @@ Sentinel（哨兵）可以监听集群中的服务器，并在主服务器进入
 - 代理分片：将客户端请求发送到代理上，由代理转发请求到正确的节点上。
 - 服务器分片：Redis Cluster。
 
-# 十四、一个简单的论坛系统分析
+# 十三、一个简单的论坛系统分析
 
 该论坛系统功能如下：
 

@@ -162,7 +162,7 @@ LeetCode editor 配置
 
 CodeFileName:
 ```java
-P$!{question.frontendQuestionId}$!velocityTool.camelCaseName(${question.titleSlug})`
+P$!{question.frontendQuestionId}$!velocityTool.camelCaseName(${question.titleSlug})
 ```
 
 Codetemplate:

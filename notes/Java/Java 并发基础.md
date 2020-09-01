@@ -493,7 +493,7 @@ Java对象头里的Mark Word里默认存储对象的HashCode，分代年龄和�
     </tr>
     <tr>
         <td>重量级锁</td>
-		<td colspan="4">指向互斥量(重量级锁)的指针</td>
+		<td colspan="4">指向互斥量(重量级锁)(monitor)的指针</td>
 		<td>10</td>
     </tr>
     <tr>
@@ -529,6 +529,8 @@ Java SE 1.6为了减少获得锁和释放锁带来的性能消耗，引入了“
 
 ![](../../assets/cs-note/java-concurrent/偏向锁初始化的流程.png ':size=500')
 </div>
+
+![](../../assets/cs-note/distribute/mk-2020-08-29-11-29-13.png)
 
 #### 偏向锁的关闭
 
