@@ -9,8 +9,8 @@ import org.junit.Test;
  */
 public class TestPersonMapper {
     @Test
-    public void testToUser(){
-        Person person=new Person();
+    public void testToUser() {
+        Person person = new Person();
         person.setAge(10);
         User user = PersonMapper.INSTANCE.toUser(person);
         System.out.println(user);
