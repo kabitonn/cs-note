@@ -36,7 +36,7 @@ public class P128LongestConsecutiveSequence {
 
     //leetcode submit region begin(Prohibit modification and deletion)
     class Solution {
-        public int longestConsecutive1(int[] nums) {
+        public int longestConsecutive(int[] nums) {
             Set<Integer> set = new HashSet<>();
             int max = 0;
             for (int num : nums) {
@@ -55,7 +55,7 @@ public class P128LongestConsecutiveSequence {
             return max;
         }
 
-        public int longestConsecutive(int[] nums) {
+        public int longestConsecutive1(int[] nums) {
             int min = Integer.MAX_VALUE;
             int max = Integer.MIN_VALUE;
             for (int num : nums) {

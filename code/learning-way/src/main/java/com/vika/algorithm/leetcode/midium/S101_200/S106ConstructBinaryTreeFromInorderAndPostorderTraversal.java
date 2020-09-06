@@ -11,8 +11,8 @@ import java.util.Stack;
 public class S106ConstructBinaryTreeFromInorderAndPostorderTraversal {
 
     public static void main(String[] args) {
-        int[] inorder = {9, 3, 15, 20, 7};
-        int[] postorder = {9, 15, 7, 20, 3};
+        int[] inorder = {4, 5, 2, 1, 3};
+        int[] postorder = {4,1,2,5,3};
         S106ConstructBinaryTreeFromInorderAndPostorderTraversal solution = new S106ConstructBinaryTreeFromInorderAndPostorderTraversal();
         System.out.println(solution.buildTree(inorder, postorder));
     }
