@@ -3,6 +3,9 @@ package com.vika.algorithm.nowcoder.swordoffer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 第一个只出现一次的字符
+ */
 public class AppearOnceChar {
 
     Map<Character, Integer> map = new HashMap<>();

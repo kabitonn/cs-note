@@ -1,5 +1,8 @@
 package com.vika.algorithm.nowcoder.swordoffer;
 
+/**
+ * 不用加减乘除做加法
+ */
 public class AddSpecial {
 
     public int Add(int num1, int num2) {

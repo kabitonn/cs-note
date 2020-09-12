@@ -3,6 +3,9 @@ package com.vika.algorithm.nowcoder.swordoffer;
 import java.util.Arrays;
 import java.util.Comparator;
 
+/**
+ *
+ */
 public class ArrayMinNum {
 
     public String PrintMinNumber(int[] numbers) {

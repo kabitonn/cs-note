@@ -8,6 +8,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 最后一个剩余数字
+ */
 public class ChildrenGame {
 
     public int LastRemaining_Solution(int n, int m) {

@@ -1,5 +1,9 @@
 package com.vika.algorithm.nowcoder.swordoffer;
 
+/**
+ * 割绳子
+ * 整数拆分
+ */
 public class CutRope {
 
     public int cutRope(int target) {

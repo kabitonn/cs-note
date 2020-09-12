@@ -1,4 +1,4 @@
-package com.exam;
+package com.vika.autumn.exam.tencent;
 
 import java.util.ArrayList;
 import java.util.List;
