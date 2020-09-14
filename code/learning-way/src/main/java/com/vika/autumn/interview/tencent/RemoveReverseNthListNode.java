@@ -1,4 +1,4 @@
-package com.vika.autumn.exam.tencent;
+package com.vika.autumn.interview.tencent;
 
 import com.vika.algorithm.leetcode.common.ListNode;
 import org.junit.Test;

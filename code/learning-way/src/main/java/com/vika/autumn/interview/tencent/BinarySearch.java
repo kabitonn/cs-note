@@ -1,4 +1,4 @@
-package com.vika.autumn.exam.tencent;
+package com.vika.autumn.interview.tencent;
 
 import org.junit.Test;
 

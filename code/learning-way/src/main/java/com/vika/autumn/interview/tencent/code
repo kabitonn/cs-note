@@ -212,6 +212,6 @@ public void Print(int n){
      while(s>50000){
        s=rand();
      }
-     return g/10000+s;
+     return g/10000*50000+s;
    }
 
