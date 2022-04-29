@@ -28,23 +28,26 @@
 
 package com.vika.autumn.leetcode.editor.cn;
 
-public class P84LargestRectangleInHistogram{
+import org.junit.Test;
+
+public class P84LargestRectangleInHistogram {
     public static void main(String[] args) {
         Solution solution = new P84LargestRectangleInHistogram().new Solution();
         // TO TEST
     }
-    //leetcode submit region begin(Prohibit modification and deletion)
-class Solution {
-    public int largestRectangleArea(int[] heights) {
 
+    //leetcode submit region begin(Prohibit modification and deletion)
+    class Solution {
+        public int largestRectangleArea(int[] heights) {
+            return 0;
+        }
     }
-}
 //leetcode submit region end(Prohibit modification and deletion)
 
-    
+
     @Test
     public void test() {
         Solution solution = new Solution();
-        
+
     }
 }

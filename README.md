@@ -93,5 +93,7 @@
 - [Docker](notes/工具/Docker.md) </br>
 - [正则表达式](notes/工具/正则表达式.md) </br>
 - [构建工具](notes/工具/构建工具.md)
+- [IDEA](notes/工具/IDEA.md)
+- [VSCode](notes/工具/VSCode.md)
 
 

@@ -18,23 +18,26 @@
 
 package com.vika.autumn.leetcode.editor.cn;
 
-public class P85MaximalRectangle{
+import org.junit.Test;
+
+public class P85MaximalRectangle {
     public static void main(String[] args) {
         Solution solution = new P85MaximalRectangle().new Solution();
         // TO TEST
     }
-    //leetcode submit region begin(Prohibit modification and deletion)
-class Solution {
-    public int maximalRectangle(char[][] matrix) {
 
+    //leetcode submit region begin(Prohibit modification and deletion)
+    class Solution {
+        public int maximalRectangle(char[][] matrix) {
+            return 0;
+        }
     }
-}
 //leetcode submit region end(Prohibit modification and deletion)
 
-    
+
     @Test
     public void test() {
         Solution solution = new Solution();
-        
+
     }
 }
