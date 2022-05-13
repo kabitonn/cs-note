@@ -5,8 +5,6 @@ import com.vika.way.srpc.constants.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.beans.factory.BeanInitializationException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -28,7 +26,7 @@ import java.util.Map;
  * @date 2022/5/12
  **/
 @Slf4j
-public class RpcConsumerPostProcessor implements BeanFactoryPostProcessor, BeanClassLoaderAware, ApplicationContextAware {
+public class RpcConsumerFactoryPostProcessor implements BeanFactoryPostProcessor, BeanClassLoaderAware, ApplicationContextAware {
 
     private ClassLoader classLoader;
 
@@ -49,7 +47,7 @@ public class RpcConsumerPostProcessor implements BeanFactoryPostProcessor, BeanC
             return;
         }
         //构造工厂bean的参数
-        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(RpcConsumerBean.class);
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(RpcSpringConsumerBean.class);
         builder.setInitMethodName(Constants.INIT_METHOD);
         builder.addPropertyValue("serviceVersion", annotation.serviceVersion());
         builder.addPropertyValue("interfaceClass", field.getType());

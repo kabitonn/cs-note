@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @date 2022/5/12
  **/
 @Data
-@ConfigurationProperties(prefix = "rpc")
+@ConfigurationProperties(prefix = "simple.rpc")
 public class RpcProperties {
     private String serviceAddress;
 

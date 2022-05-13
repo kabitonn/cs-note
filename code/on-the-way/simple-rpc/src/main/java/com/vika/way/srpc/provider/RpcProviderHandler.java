@@ -34,7 +34,7 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcRequest> 
      */
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, RpcRequest request) throws Exception {
-        RpcProvider.submit(() -> {
+        RpcProviderPostProcessor.submit(() -> {
             log.debug("Receive request {}", request.getRequestId());
             RpcResponse response = new RpcResponse();
             response.setRequestId(request.getRequestId());

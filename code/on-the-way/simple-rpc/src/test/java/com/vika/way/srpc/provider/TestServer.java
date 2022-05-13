@@ -17,7 +17,7 @@ public class TestServer {
     public static void main(String[] args) throws Exception {
         String serverAddress = "127.0.0.1:18867";
         String registryAddress = "127.0.0.1:2181";
-        RpcProvider rpcServer = new RpcProvider(serverAddress,
+        RpcProviderPostProcessor rpcServer = new RpcProviderPostProcessor(serverAddress,
             ServiceRegistryFactory.getInstance(ServiceRegistryType.zookeeper, registryAddress));
         HelloService helloService = new HelloServiceImpl();
         rpcServer.addService(helloService, rpcServer.getServerAddress());

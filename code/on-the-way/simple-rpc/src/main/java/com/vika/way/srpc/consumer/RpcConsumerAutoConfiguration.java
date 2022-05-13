@@ -16,6 +16,6 @@ import org.springframework.context.annotation.Configuration;
 public class RpcConsumerAutoConfiguration {
     @Bean
     public static BeanFactoryPostProcessor rpcConsumerPostProcess() {
-        return new RpcConsumerPostProcessor();
+        return new RpcConsumerFactoryPostProcessor();
     }
 }

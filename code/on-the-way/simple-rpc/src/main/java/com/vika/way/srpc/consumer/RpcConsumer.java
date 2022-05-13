@@ -35,14 +35,6 @@ public class RpcConsumer extends SimpleChannelInboundHandler<RpcResponse> {
         this.serviceRegistry = serviceRegistry;
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> T create(Class<T> interfaceClass, String serviceVersion, ServiceRegistry serviceRegistry) {
-        return (T) Proxy.newProxyInstance(
-                interfaceClass.getClassLoader(),
-                new Class<?>[]{interfaceClass},
-                new RpcInvokeHandler<>(serviceVersion, serviceRegistry));
-    }
-
     public RpcResponse sendRequest(RpcRequest rpcRequest) throws Exception {
         try {
             Bootstrap b = new Bootstrap();

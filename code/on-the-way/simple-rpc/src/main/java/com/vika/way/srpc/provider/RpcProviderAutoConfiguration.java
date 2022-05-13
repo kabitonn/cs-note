@@ -23,9 +23,9 @@ public class RpcProviderAutoConfiguration {
     private RpcProperties rpcProperties;
 
     @Bean
-    public RpcProvider init() throws Exception {
+    public RpcProviderPostProcessor initRpcProviderPostProcessor() throws Exception {
         ServiceRegistryType type = ServiceRegistryType.valueOf(rpcProperties.getServiceRegistryType());
         ServiceRegistry serviceRegistry = ServiceRegistryFactory.getInstance(type, rpcProperties.getServiceRegistryAddress());
-        return new RpcProvider(rpcProperties.getServiceAddress(), serviceRegistry);
+        return new RpcProviderPostProcessor(rpcProperties.getServiceAddress(), serviceRegistry);
     }
 }

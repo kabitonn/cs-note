@@ -2,19 +2,18 @@ package com.vika.way.srpc.consumer;
 
 import com.vika.way.srpc.registry.ServiceRegistryFactory;
 import com.vika.way.srpc.registry.ServiceRegistryType;
+import com.vika.way.srpc.utils.RpcUtils;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.FactoryBean;
 
 /**
- *
- *
  * @author chenwei.tjw
  * @date 2022/5/12
  **/
 @Setter
 @Slf4j
-public class RpcConsumerBean implements FactoryBean {
+public class RpcSpringConsumerBean implements FactoryBean {
 
     private Class<?> interfaceClass;
 
@@ -28,7 +27,7 @@ public class RpcConsumerBean implements FactoryBean {
 
 
     public void init() throws Exception {
-        this.object = RpcConsumer.create(interfaceClass, serviceVersion, ServiceRegistryFactory.getInstance(
+        this.object = RpcUtils.create(interfaceClass, serviceVersion, ServiceRegistryFactory.getInstance(
                 ServiceRegistryType.valueOf(registryType), registryAddress
         ));
         log.info("RpcConsumerBean {} init ...", interfaceClass.getName());

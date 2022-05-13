@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2022/5/12
  **/
 @Slf4j
-public class RpcProvider implements InitializingBean, BeanPostProcessor {
+public class RpcProviderPostProcessor implements InitializingBean, BeanPostProcessor {
 
     private static ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("rpc-provider-pool-%d").build();
     private static ThreadPoolExecutor threadPoolExecutor;
@@ -47,7 +47,7 @@ public class RpcProvider implements InitializingBean, BeanPostProcessor {
     private EventLoopGroup bossGroup = null;
     private EventLoopGroup workerGroup = null;
 
-    public RpcProvider(String serverAddress, ServiceRegistry serviceRegistry) {
+    public RpcProviderPostProcessor(String serverAddress, ServiceRegistry serviceRegistry) {
         this.serverAddress = serverAddress;
         this.serviceRegistry = serviceRegistry;
     }
@@ -58,7 +58,7 @@ public class RpcProvider implements InitializingBean, BeanPostProcessor {
 
     public static void submit(Runnable task) {
         if (threadPoolExecutor == null) {
-            synchronized (RpcProvider.class) {
+            synchronized (RpcProviderPostProcessor.class) {
                 if (threadPoolExecutor == null) {
                     threadPoolExecutor = new ThreadPoolExecutor(Constants.PROVIDER_THREAD_POOL_NUM, Constants.PROVIDER_THREAD_POOL_NUM,
                             600L, TimeUnit.SECONDS, new ArrayBlockingQueue<>(Constants.PROVIDER_THREAD_POOL_QUEUE_LEN),
