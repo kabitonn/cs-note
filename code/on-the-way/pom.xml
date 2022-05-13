@@ -15,7 +15,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>pre-way</module>
-        <module>simple-rpc</module>
+        <module>simple-rpc-starter</module>
         <module>simple-rpc-provider-client</module>
         <module>simple-rpc-provider</module>
         <module>simple-rpc-consumer</module>
@@ -38,7 +38,7 @@
         <dependencies>
             <dependency>
                 <groupId>com.vika.onway</groupId>
-                <artifactId>simple-rpc</artifactId>
+                <artifactId>simple-rpc-starter</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
 

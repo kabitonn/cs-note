@@ -24,7 +24,7 @@
 
         <dependency>
             <groupId>com.vika.onway</groupId>
-            <artifactId>simple-rpc</artifactId>
+            <artifactId>simple-rpc-starter</artifactId>
         </dependency>
 
         <dependency>
