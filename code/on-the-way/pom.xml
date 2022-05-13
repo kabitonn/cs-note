@@ -19,6 +19,7 @@
         <module>simple-rpc-provider-client</module>
         <module>simple-rpc-provider</module>
         <module>simple-rpc-consumer</module>
+        <module>spring-way</module>
     </modules>
 
     <properties>
